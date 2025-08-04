@@ -11,6 +11,7 @@ import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.PermissionsController
 import dev.icerock.moko.permissions.RequestCanceledException
+import dev.icerock.moko.permissions.camera.CAMERA
 import kotlinx.coroutines.launch
 
 class PermissionsViewModel(
