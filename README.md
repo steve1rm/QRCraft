@@ -8,7 +8,6 @@ QR Capturing app with a twist
 - [X] Compose KMP (Android, iOS)
 - [x] Koin dependency injection
 - [x] Type-safe navigation
-- [x] Ktor client
 - [x] Clean architecture
 - [x] Gradle version catalog
 - [x] kotlin coroutines
