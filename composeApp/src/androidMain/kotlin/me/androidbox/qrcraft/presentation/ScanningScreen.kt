@@ -18,21 +18,7 @@ fun ScanningScreen(
     permissionsViewModel: PermissionsViewModel,
     modifier: Modifier = Modifier
 ) {
-    val factory = rememberPermissionsControllerFactory()
-    val permissionController = remember(factory) {
-        factory.createPermissionsController()
-    }
 
-    BindEffect(permissionController)
 
-    val cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA)
 
-    if(!cameraPermissionState.status.isGranted) {
-        CameraPreviewContent(
-            cameraPreviewViewModel
-        )
-    }
-    else {
-        // Snack bar
-    }
 }
