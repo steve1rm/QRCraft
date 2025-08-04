@@ -19,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import co.touchlab.kermit.Logger
 import me.androidbox.qrcraft.navigation.AppNavigation
 import me.androidbox.qrcraft.navigation.QrCraftNavGraph
+import me.androidbox.qrcraft.scanning.presentation.PrefDataStore
 import me.androidbox.ui.AppTheme
 import me.androidbox.ui.OnSurface
 import org.jetbrains.compose.resources.stringResource
@@ -29,7 +30,9 @@ import qrcraft.composeapp.generated.resources.scan_result
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
-fun App() {
+fun App(
+    prefDataStore: PrefDataStore
+) {
 
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState()
@@ -75,7 +78,9 @@ Logger.e("currentRoute $currentRoute isScanResult $isScanResult")
             }
         }) {
 
-            AppNavigation(navController = navController)
+            AppNavigation(
+                navController = navController,
+                prefDataStore = prefDataStore)
         }
 
 

@@ -23,6 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
 import co.touchlab.kermit.Logger
 import com.kashif.cameraK.controller.CameraController
 import com.kashif.cameraK.enums.CameraLens
@@ -36,6 +38,7 @@ import com.kashif.qrscannerplugin.rememberQRScannerPlugin
 import dev.icerock.moko.permissions.PermissionState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import me.androidbox.qrcraft.permissions.PermissionDialog
 import me.androidbox.qrcraft.scanning.presentation.components.CustomSnackBarVisuals
@@ -53,9 +56,9 @@ fun ScanningScreen(
     onProvidePermission: () -> Unit,
     modifier: Modifier = Modifier,
     permissionState: PermissionState,
-    onNavigateToScanResult: (String) -> Unit
+    onNavigateToScanResult: (String) -> Unit,
+    prefDataStore: PrefDataStore
 ) {
-
      val coroutineScope = rememberCoroutineScope()
      val snackbarHostState = remember { SnackbarHostState() }
      var cameraController by remember {
@@ -98,16 +101,25 @@ fun ScanningScreen(
      showQrCraftPermissionDialog = when(permissionState) {
          PermissionState.Granted -> {
              coroutineScope.launch {
-                 snackbarHostState.showSnackbar(
-                     CustomSnackBarVisuals(
-                         message = "Camera permission granted",
-                         duration = SnackbarDuration.Short,
-                         drawableResource = Res.drawable.tick,
-                         containerColor = Color(0xff4caf50),
-                         contentColor = Color(0xFF273037)
+                 val hasShown = prefDataStore.data.firstOrNull()?.get(booleanPreferencesKey("snackbar")) == true
+
+                 if(!hasShown) {
+                     snackbarHostState.showSnackbar(
+                         CustomSnackBarVisuals(
+                             message = "Camera permission granted",
+                             duration = SnackbarDuration.Short,
+                             drawableResource = Res.drawable.tick,
+                             containerColor = Color(0xff4caf50),
+                             contentColor = Color(0xFF273037)
+                         )
                      )
-                 )
+
+                     prefDataStore.edit {
+                         it.set(booleanPreferencesKey("snackbar"), value = true)
+                     }
+                 }
              }
+
              false
          }
          else -> {
@@ -190,12 +202,16 @@ fun ScanningScreen(
 @Composable
 fun ScanningScreenPreview() {
     AppTheme {
+
+/*
         ScanningScreen(
             onCloseClicked = {},
             onNavigateToScanResult = {},
             permissionState = PermissionState.NotDetermined,
-            onProvidePermission = {}
+            onProvidePermission = {},
+            prefDataStore = FIXME
         )
+*/
     }
 }
 

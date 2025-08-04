@@ -67,8 +67,8 @@ kotlin {
             implementation(libs.coil.svg)
             implementation(libs.core)
             implementation(libs.qr.kit)
-
-
+            implementation(libs.datastore)
+            implementation(libs.datastore.preferences)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
