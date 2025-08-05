@@ -1,6 +1,7 @@
 package me.androidbox.qrcraft.presentation
 
 import android.content.Context
+import androidx.camera.core.CameraSelector.DEFAULT_BACK_CAMERA
 import androidx.camera.core.CameraSelector.DEFAULT_FRONT_CAMERA
 import androidx.camera.core.Preview
 import androidx.camera.core.SurfaceRequest
@@ -28,7 +29,7 @@ class CameraPreviewViewModel : ViewModel() {
         val processCameraProvider = ProcessCameraProvider.awaitInstance(appContext)
 
         processCameraProvider.bindToLifecycle(
-            lifecycleOwner, DEFAULT_FRONT_CAMERA, cameraPreviewUseCase
+            lifecycleOwner, DEFAULT_BACK_CAMERA, cameraPreviewUseCase
         )
 
         /** Cancellation signals we're done with the camera */
