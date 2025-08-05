@@ -30,14 +30,14 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun PermissionDialog(
-    onCancel: () -> Unit,
-    onDeleteClick: () -> Unit,
+    onCloseApp: () -> Unit,
+    onGrantAccess: () -> Unit,
     title: String,
     description: String,
     modifier: Modifier = Modifier
 ) {
     BasicAlertDialog(
-        onDismissRequest = onCancel,
+        onDismissRequest = onCloseApp,
         modifier = modifier
             .fillMaxWidth()
             .padding(16.dp)
@@ -77,7 +77,7 @@ fun PermissionDialog(
 
                 TextButton(
                     modifier = Modifier.width(120.dp),
-                    onClick = onCancel,
+                    onClick = onCloseApp,
                     shape = RoundedCornerShape(100F),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White
@@ -93,7 +93,7 @@ fun PermissionDialog(
 
                 TextButton(
                     modifier = Modifier.width(120.dp),
-                    onClick = onDeleteClick,
+                    onClick = onGrantAccess,
                     shape = RoundedCornerShape(100F),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White
@@ -115,8 +115,8 @@ fun PermissionDialog(
 @Composable
 fun PermissionDialogPreview() {
     PermissionDialog(
-        onCancel = {},
-        onDeleteClick = {},
+        onCloseApp = {},
+        onGrantAccess = {},
         title = "Camera Required",
         description = "This app cannot function without camera access. To scan QR codes, Please grant permission."
     )

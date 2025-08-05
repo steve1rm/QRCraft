@@ -10,9 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberPermissionState
+import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
+import me.androidbox.qrcraft.permissions.PermissionDialog
 import me.androidbox.qrcraft.permissions.PermissionsViewModel
 import me.androidbox.qrcraft.presentation.CameraPreviewViewModel
 import me.androidbox.qrcraft.presentation.ScanningScreen
@@ -29,8 +30,6 @@ class MainActivity : ComponentActivity() {
 
             BindEffect(permissionController)
 
-            val cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA)
-
             val cameraPreviewViewModel = remember {
                 CameraPreviewViewModel()
             }
@@ -40,10 +39,29 @@ class MainActivity : ComponentActivity() {
                   permissionsController = permissionController
                 )
             }
-            ScanningScreen(
-                cameraPreviewViewModel = cameraPreviewViewModel,
-                 permissionsViewModel = permissionsViewModel
-            )
+
+            when(permissionsViewModel.permissionState) {
+                PermissionState.Granted -> {
+                    ScanningScreen(
+                        cameraPreviewViewModel = cameraPreviewViewModel
+                    )
+                }
+                PermissionState.DeniedAlways -> {
+                    permissionsViewModel.provideOrRequestCameraPermission()
+                }
+                else -> {
+                    PermissionDialog(
+                        onCloseApp = {
+
+                        },
+                        onGrantAccess = {
+                            permissionsViewModel.provideOrRequestCameraPermission()
+                        },
+                        title = "Camera Required",
+                        description = "This app cannot function without camera access. To scan QR codes, Please grant permission."
+                    )
+                }
+            }
         }
     }
 }
