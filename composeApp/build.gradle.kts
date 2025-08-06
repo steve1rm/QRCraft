@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlin.serialization)
+
 }
 
 kotlin {
@@ -32,6 +34,9 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.core.splashscreen)
+            implementation(libs.koin.android)
+            implementation(libs.koin.compose)
             implementation(libs.androidx.camera.core)
             implementation(libs.androidx.camera.compose)
             implementation(libs.androidx.camera.lifecycle)
@@ -50,6 +55,10 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             api(libs.moko.permissions)
             api(libs.moko.permissions.compose)
+            implementation(libs.navigation.compose)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

@@ -17,11 +17,15 @@ import me.androidbox.qrcraft.permissions.PermissionDialog
 import me.androidbox.qrcraft.permissions.PermissionsViewModel
 import me.androidbox.qrcraft.presentation.CameraPreviewViewModel
 import me.androidbox.qrcraft.presentation.ScanningScreen
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        installSplashScreen()
         enableEdgeToEdge()
+
         setContent {
             val factory = rememberPermissionsControllerFactory()
             val permissionController = remember(factory) {
@@ -52,7 +56,7 @@ class MainActivity : ComponentActivity() {
                 else -> {
                     PermissionDialog(
                         onCloseApp = {
-                            
+
                         },
                         onGrantAccess = {
                             permissionsViewModel.provideOrRequestCameraPermission()
