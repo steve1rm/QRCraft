@@ -59,6 +59,8 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
+            implementation("io.github.kashif-mehmood-km:camerak:0.0.12")
+            implementation("io.github.kashif-mehmood-km:qr_scanner_plugin:0.0.8")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

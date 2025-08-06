@@ -16,7 +16,7 @@ import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import me.androidbox.qrcraft.permissions.PermissionDialog
 import me.androidbox.qrcraft.permissions.PermissionsViewModel
 import me.androidbox.qrcraft.presentation.CameraPreviewViewModel
-import me.androidbox.qrcraft.presentation.ScanningScreen
+import me.androidbox.qrcraft.scanning.presentation.ScanningScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
 class MainActivity : ComponentActivity() {
@@ -47,7 +47,7 @@ class MainActivity : ComponentActivity() {
             when(permissionsViewModel.permissionState) {
                 PermissionState.Granted -> {
                     ScanningScreen(
-                        cameraPreviewViewModel = cameraPreviewViewModel
+
                     )
                 }
                 PermissionState.DeniedAlways -> {
