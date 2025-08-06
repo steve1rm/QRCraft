@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
                 else -> {
                     PermissionDialog(
                         onCloseApp = {
-
+                            
                         },
                         onGrantAccess = {
                             permissionsViewModel.provideOrRequestCameraPermission()
