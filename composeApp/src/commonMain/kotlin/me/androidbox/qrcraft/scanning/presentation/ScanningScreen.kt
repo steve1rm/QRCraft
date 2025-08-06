@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.kashif.cameraK.permissions.Permissions
 import com.kashif.cameraK.permissions.providePermissions
 import kotlinx.coroutines.launch
+import me.androidbox.qrcraft.permissions.PermissionDialog
 
 @Composable
 fun ScanningScreen(
@@ -76,6 +77,15 @@ fun ScanningScreen(
                     text = "Point your camera a the QR Code",
                     color = Color.White
                 )
+
+                if(!permissions.hasCameraPermission()) {
+                    PermissionDialog(
+                        onCloseApp = {},
+                        onGrantAccess = {},
+                        title = "Camera Required",
+                        description = "This app cannot function without camera access. To scan QR codes, Please grant permission."
+                    )
+                }
             }
         }
     )
