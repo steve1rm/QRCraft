@@ -49,27 +49,27 @@ fun ScanningScreen(
     var cameraController by remember {
         mutableStateOf<CameraController?>(null)
     }
-    val cameraPermissionState by remember { mutableStateOf(permissions.hasCameraPermission()) }
-    var showPermissionDialog by remember {
-        mutableStateOf(false)
+    var cameraPermissionState by remember { mutableStateOf(permissions.hasCameraPermission()) }
+    var shouldShowSystemPermissionsDialog by remember {
+        mutableStateOf(cameraPermissionState)
     }
 
-    if(showPermissionDialog) {
+    if(cameraPermissionState) {
         coroutineScope.launch {
             snackbarHostState.showSnackbar(
                 message ="Camera permission granted",
-                duration = SnackbarDuration.Long
+                duration = SnackbarDuration.Short
             )
         }
     }
 
-    if(showPermissionDialog) {
+    if(shouldShowSystemPermissionsDialog) {
         permissions.RequestCameraPermission(
             onGranted = {
-                showPermissionDialog = false
+                cameraPermissionState = true
             },
             onDenied = {
-                showPermissionDialog = false
+                cameraPermissionState = false
             }
         )
     }
@@ -121,7 +121,7 @@ fun ScanningScreen(
                     PermissionDialog(
                         onCloseApp = onCloseClicked,
                         onGrantAccess = {
-                            showPermissionDialog = true
+                            shouldShowSystemPermissionsDialog = true
                         },
                         title = "Camera Required",
                         description = "This app cannot function without camera access. To scan QR codes, Please grant permission."
