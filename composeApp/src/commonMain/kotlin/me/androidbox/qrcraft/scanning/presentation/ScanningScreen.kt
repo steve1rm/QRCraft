@@ -14,6 +14,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,14 +55,18 @@ fun ScanningScreen(
         mutableStateOf(cameraPermissionState)
     }
 
-    if(cameraPermissionState) {
-        coroutineScope.launch {
+    var hasShownSnackBarOnce by remember { mutableStateOf(false) }
+
+    LaunchedEffect(cameraPermissionState) {
+        if (cameraPermissionState && !hasShownSnackBarOnce) {
+            hasShownSnackBarOnce = true
             snackbarHostState.showSnackbar(
-                message ="Camera permission granted",
+                message = "Camera permission granted",
                 duration = SnackbarDuration.Short
             )
         }
     }
+
 
     if(shouldShowSystemPermissionsDialog) {
         permissions.RequestCameraPermission(
@@ -73,7 +78,6 @@ fun ScanningScreen(
             }
         )
     }
-
 
     Scaffold(
         modifier = modifier,
