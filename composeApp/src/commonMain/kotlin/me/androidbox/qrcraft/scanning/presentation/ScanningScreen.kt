@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import co.touchlab.kermit.Logger
 import com.kashif.cameraK.controller.CameraController
 import com.kashif.cameraK.enums.CameraLens
 import com.kashif.cameraK.enums.Directory
@@ -35,6 +36,9 @@ import com.kashif.cameraK.enums.TorchMode
 import com.kashif.cameraK.permissions.Permissions
 import com.kashif.cameraK.permissions.providePermissions
 import com.kashif.cameraK.ui.CameraPreview
+import com.kashif.qrscannerplugin.rememberQRScannerPlugin
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import me.androidbox.qrcraft.permissions.PermissionDialog
 
@@ -56,6 +60,19 @@ fun ScanningScreen(
     }
 
     var hasShownSnackBarOnce by remember { mutableStateOf(false) }
+    val qrScannerPlugin = rememberQRScannerPlugin(coroutineScope)
+
+    LaunchedEffect(Unit) {
+        qrScannerPlugin
+            .getQrCodeFlow()
+            .distinctUntilChanged()
+            .collectLatest { qrCode ->
+                Logger.d {
+                    "qrCode $qrCode"
+                }
+                qrScannerPlugin.pauseScanning()
+            }
+    }
 
     LaunchedEffect(cameraPermissionState) {
         if (cameraPermissionState && !hasShownSnackBarOnce) {
@@ -108,6 +125,7 @@ fun ScanningScreen(
                         },
                         onCameraControllerReady = {
                             cameraController = it
+                            qrScannerPlugin.startScanning()
                         }
                     )
                 }
