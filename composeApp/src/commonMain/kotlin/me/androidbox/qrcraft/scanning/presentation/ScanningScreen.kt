@@ -63,6 +63,9 @@ fun ScanningScreen(
     val qrScannerPlugin = rememberQRScannerPlugin(coroutineScope)
 
     LaunchedEffect(Unit) {
+        Logger.d {
+            "qrCode LaunchedEffect"
+        }
         qrScannerPlugin
             .getQrCodeFlow()
             .distinctUntilChanged()
@@ -122,8 +125,12 @@ fun ScanningScreen(
                             setImageFormat(ImageFormat.JPEG)
                             setDirectory(Directory.PICTURES)
                             setQualityPrioritization(QualityPrioritization.QUALITY)
+                            addPlugin(qrScannerPlugin)
                         },
                         onCameraControllerReady = {
+                            Logger.d {
+                                "qrCode startScanning"
+                            }
                             cameraController = it
                             qrScannerPlugin.startScanning()
                         }
