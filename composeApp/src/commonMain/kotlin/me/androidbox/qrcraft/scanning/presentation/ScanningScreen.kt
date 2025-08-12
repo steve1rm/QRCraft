@@ -153,7 +153,7 @@ fun ScanningScreen(
                             setImageFormat(ImageFormat.JPEG)
                             setDirectory(Directory.PICTURES)
                             setQualityPrioritization(QualityPrioritization.QUALITY)
-                        //    addPlugin(qrScannerPlugin)
+                            addPlugin(qrScannerPlugin)
                         },
                         onCameraControllerReady = {
                             Logger.d {
