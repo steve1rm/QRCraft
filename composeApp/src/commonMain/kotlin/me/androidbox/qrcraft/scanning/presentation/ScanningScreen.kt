@@ -96,7 +96,6 @@ fun ScanningScreen(
         }
     }
 
-
     if(shouldShowSystemPermissionsDialog) {
         permissions.RequestCameraPermission(
             onGranted = {
