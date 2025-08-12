@@ -1,27 +1,18 @@
 package me.androidbox.qrcraft.scanning.presentation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -49,9 +40,8 @@ import com.kashif.qrscannerplugin.rememberQRScannerPlugin
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import me.androidbox.qrcraft.permissions.PermissionDialog
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.imageResource
-import org.jetbrains.compose.resources.vectorResource
+import me.androidbox.qrcraft.scanning.presentation.components.CustomSnackBarVisuals
+import me.androidbox.qrcraft.scanning.presentation.components.CustomSnackbar
 import qrcraft.composeapp.generated.resources.Res
 import qrcraft.composeapp.generated.resources.tick
 
@@ -93,12 +83,7 @@ fun ScanningScreen(
     LaunchedEffect(cameraPermissionState) {
         if (cameraPermissionState && !hasShownSnackBarOnce) {
             hasShownSnackBarOnce = true
-/*
-            snackbarHostState.showSnackbar(
-                message = "Camera permission granted",
-                duration = SnackbarDuration.Short
-            )
-*/
+
             snackbarHostState.showSnackbar(
                 CustomSnackBarVisuals(
                     message = "Camera permission granted",
@@ -153,7 +138,7 @@ fun ScanningScreen(
                             setImageFormat(ImageFormat.JPEG)
                             setDirectory(Directory.PICTURES)
                             setQualityPrioritization(QualityPrioritization.QUALITY)
-                        //    addPlugin(qrScannerPlugin)
+                            addPlugin(qrScannerPlugin)
                         },
                         onCameraControllerReady = {
                             Logger.d {
@@ -189,51 +174,7 @@ fun ScanningScreen(
     )
 }
 
-data class CustomSnackBarVisuals( // Renamed for clarity, implements SnackbarVisuals
-    override val message: String,
-    override val duration: SnackbarDuration,
-    val drawableResource: DrawableResource?, // Make it nullable if icon is optional
-    val containerColor: Color,              // Add color property
-    val contentColor: Color,                // Add content color for text/icon
-    override val actionLabel: String? = null,
-    override val withDismissAction: Boolean = false
-) : SnackbarVisuals
 
 
-// In ScanningScreen.kt or a shared UI file
-@Composable
-fun CustomSnackbar(snackbarData: SnackbarData) {
-    val visuals = snackbarData.visuals as? CustomSnackBarVisuals // Cast to your custom type
-        ?: return // Or handle default SnackbarVisuals if you want to mix and match
-
-    Logger.d { "CustomSnackbar - Message: ${visuals.message}" }
-    Logger.d { "CustomSnackbar - Container Color: ${visuals.containerColor}" }
-    Logger.d { "CustomSnackbar - Content Color: ${visuals.contentColor}" }
-    Logger.d { "CustomSnackbar - Drawable Resource: ${visuals.drawableResource}" }
-
-    Snackbar(
-        modifier = Modifier.padding(12.dp), // Optional padding
-        containerColor = visuals.containerColor,
-        contentColor = visuals.contentColor,
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            visuals.drawableResource?.let { resId ->
-                Icon(
-                    imageVector = vectorResource(Res.drawable.tick),
-                    contentDescription = null, // Provide a meaningful description if needed
-                    tint = visuals.contentColor, // Use custom content color
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                text = visuals.message)
-        }
-    }
-}
 
 
