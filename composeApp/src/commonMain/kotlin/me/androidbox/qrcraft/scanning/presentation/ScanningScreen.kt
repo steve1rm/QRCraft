@@ -1,4 +1,4 @@
-package me.androidbox.qrcraft.scanning.presentation
+ package me.androidbox.qrcraft.scanning.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -45,10 +45,11 @@ import me.androidbox.qrcraft.scanning.presentation.components.CustomSnackbar
 import qrcraft.composeapp.generated.resources.Res
 import qrcraft.composeapp.generated.resources.tick
 
-@Composable
+ @Composable
 fun ScanningScreen(
     onCloseClicked: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onNavigateToScanResult: (String) -> Unit
 ) {
 
     val permissions: Permissions = providePermissions()
@@ -71,11 +72,11 @@ fun ScanningScreen(
         }
         qrScannerPlugin
             .getQrCodeFlow()
-            .distinctUntilChanged()
+       .distinctUntilChanged()
             .collectLatest { qrCode ->
-                Logger.d {
-                    "qrCode $qrCode"
-                }
+                Logger.d ( tag = "Scanned code",
+                    messageString = "qrCode $qrCode")
+                onNavigateToScanResult(qrCode)
                 qrScannerPlugin.pauseScanning()
             }
     }
