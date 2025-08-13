@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -59,8 +58,17 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
-            implementation("io.github.kashif-mehmood-km:camerak:0.0.12")
-            implementation("io.github.kashif-mehmood-km:qr_scanner_plugin:0.0.8")
+            implementation(libs.camerak)
+            implementation(libs.qr.scanner.plugin)
+            implementation(libs.kermit)
+            implementation(libs.permissions.camera)
+            implementation(libs.material.icons.extended)
+            implementation(libs.constraintlayout.compose.multiplatform)
+            implementation(libs.coil.svg)
+            implementation(libs.core)
+            implementation(libs.qr.kit)
+
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

@@ -9,18 +9,32 @@ androidx-core = "1.16.0"
 androidx-espresso = "3.7.0"
 androidx-lifecycle = "2.9.1"
 androidx-testExt = "1.3.0"
+camerak = "0.0.12"
+coilSvg = "3.3.0"
 composeMultiplatform = "1.8.2"
+constraintlayoutComposeMultiplatform = "0.6.0"
+core = "3.5.3"
 junit = "4.13.2"
+kermit = "2.0.6"
 kotlin = "2.2.0"
 coreSplashscreen = "1.0.1"
 kotlinxSerializationJson = "1.9.0"
+materialIconsExtended = "1.7.3"
 navigationCompose = "2.8.0-alpha13"
 koin = "4.1.0"
 camerax = "1.5.0-beta02"
 accompanist = "0.37.3"
 moko = "0.18.0"
+permissionsCamera = "0.19.1"
+qr_scanner_plugin = "0.0.8"
+qrKit = "3.0.7"
 
 [libraries]
+camerak = { module = "io.github.kashif-mehmood-km:camerak", version.ref = "camerak" }
+coil-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coilSvg" }
+constraintlayout-compose-multiplatform = { module = "tech.annexflow.compose:constraintlayout-compose-multiplatform", version.ref = "constraintlayoutComposeMultiplatform" }
+core = { module = "com.google.zxing:core", version.ref = "core" }
+kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }
@@ -32,6 +46,7 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 androidx-lifecycle-viewmodelCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
+material-icons-extended = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
@@ -52,6 +67,9 @@ androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.r
 # The helper library to grant the camera permission
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "camerax" }
+permissions-camera = { module = "dev.icerock.moko:permissions-camera", version.ref = "permissionsCamera" }
+qr-kit = { module = "network.chaintech:qr-kit", version.ref = "qrKit" }
+qr_scanner_plugin = { module = "io.github.kashif-mehmood-km:qr_scanner_plugin", version.ref = "qr_scanner_plugin" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
