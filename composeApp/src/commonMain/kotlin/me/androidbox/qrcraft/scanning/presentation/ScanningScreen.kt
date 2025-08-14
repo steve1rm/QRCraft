@@ -91,7 +91,7 @@ fun ScanningScreen(
                     duration = SnackbarDuration.Short,
                     drawableResource = Res.drawable.tick,
                     containerColor = Color(0xff4caf50),
-                    contentColor = Color.White
+                    contentColor = Color(0xFF273037)
                 )
             )
         }

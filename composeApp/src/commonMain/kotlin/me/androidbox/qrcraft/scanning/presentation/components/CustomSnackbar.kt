@@ -3,7 +3,6 @@ package me.androidbox.qrcraft.scanning.presentation.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Snackbar
@@ -17,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import me.androidbox.ui.appTypography
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.vectorResource
 import qrcraft.composeapp.generated.resources.Res
@@ -29,26 +29,29 @@ fun CustomSnackbar(snackbarData: SnackbarData) {
     
     if(visuals is CustomSnackBarVisuals) {
         Snackbar(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier
+                .size(width = 240.dp, height = 38.dp),
             containerColor = visuals.containerColor,
             contentColor = visuals.contentColor,
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 visuals.drawableResource?.let { resId ->
                     Icon(
                         imageVector = vectorResource(Res.drawable.tick),
                         contentDescription = null,
                         tint = visuals.contentColor,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(16.dp)
                     )
                 }
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
-                    text = visuals.message)
+                    text = visuals.message,
+                    style = appTypography().labelLarge
+                )
             }
         }
     }
