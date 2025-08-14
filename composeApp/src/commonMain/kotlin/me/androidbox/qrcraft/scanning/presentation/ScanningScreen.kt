@@ -41,6 +41,7 @@ import me.androidbox.qrcraft.permissions.PermissionDialog
 import me.androidbox.qrcraft.scanning.presentation.components.CustomSnackBarVisuals
 import me.androidbox.qrcraft.scanning.presentation.components.CustomSnackbar
 import me.androidbox.qrcraft.scanning.presentation.components.ScanningSurfaceRoundedCorners
+import me.androidbox.ui.appTypography
 import qrcraft.composeapp.generated.resources.Res
 import qrcraft.composeapp.generated.resources.tick
 
@@ -120,9 +121,10 @@ fun ScanningScreen(
             BoxWithConstraints(
                 modifier = Modifier.fillMaxSize()
                     .padding(paddingValues)
-                    .background(color = Color.LightGray),
+                    .background(color = Color(0x00000000).copy(alpha = 0.50f)),
                 contentAlignment = Alignment.Center) {
                 val boxHeight = this.maxHeight
+
 
                 ScanningSurfaceRoundedCorners(
                     modifier = Modifier.size(324.dp), // Apply size here
@@ -154,10 +156,12 @@ fun ScanningScreen(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = boxHeight * 0.25f),
+                        .align(alignment = Alignment.TopCenter)
+                        .padding(top = boxHeight * 0.20f),
                     textAlign = TextAlign.Center,
                     text = "Point your camera a the QR Code",
-                    color = Color.White
+                    color = Color.White,
+                    style = appTypography().titleMedium
                 )
 
                 if(!cameraPermissionState) {
