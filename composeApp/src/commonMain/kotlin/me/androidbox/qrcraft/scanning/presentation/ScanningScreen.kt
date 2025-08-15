@@ -41,7 +41,9 @@ import me.androidbox.qrcraft.permissions.PermissionDialog
 import me.androidbox.qrcraft.scanning.presentation.components.CustomSnackBarVisuals
 import me.androidbox.qrcraft.scanning.presentation.components.CustomSnackbar
 import me.androidbox.qrcraft.scanning.presentation.components.ScanningSurfaceRoundedCorners
+import me.androidbox.ui.AppTheme
 import me.androidbox.ui.appTypography
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import qrcraft.composeapp.generated.resources.Res
 import qrcraft.composeapp.generated.resources.tick
 
@@ -59,7 +61,7 @@ fun ScanningScreen(
         mutableStateOf<CameraController?>(null)
     }
 
-    var cameraPermissionState by remember(permissions.hasCameraPermission()) {
+    var cameraPermissionState by remember(permissions) {
         mutableStateOf(permissions.hasCameraPermission())
     }
     var shouldShowSystemPermissionsDialog by remember {
@@ -123,8 +125,8 @@ fun ScanningScreen(
         content = { paddingValues ->
             BoxWithConstraints(
                 modifier = Modifier.fillMaxSize()
-                    .padding(paddingValues)
-                    .background(color = Color(0x00000000).copy(alpha = 0.50f)),
+                    .background(color = Color(0x00000000).copy(alpha = 0.50f))
+                    .padding(paddingValues = paddingValues),
                 contentAlignment = Alignment.Center) {
                 val boxHeight = this.maxHeight
 
@@ -182,7 +184,14 @@ fun ScanningScreen(
     )
 }
 
-
-
-
+@Preview
+@Composable
+fun ScanningScreenPreview() {
+    AppTheme {
+        ScanningScreen(
+            onCloseClicked = {},
+            onNavigateToScanResult = {}
+        )
+    }
+}
 
