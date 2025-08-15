@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -89,6 +90,10 @@ fun ScanResultScreen(scannedQrCode: String) {
     val shareManager = rememberShareManager()
     val clipboard = LocalClipboardManager.current
 
+
+    val uriHandler = LocalUriHandler.current
+
+
     ConstraintLayout(modifier = Modifier.fillMaxSize().background(OnSurface)) {
 
         val (colScannedQR, colInfo) = createRefs()
@@ -120,7 +125,9 @@ fun ScanResultScreen(scannedQrCode: String) {
                 color = OnSurface,
                 modifier = Modifier.wrapContentWidth().wrapContentHeight()
                     .padding(top = 16.dp, start = 16.dp, end = 16.dp).then(
-                        if (qrContentType == QRContentType.LINK) Modifier.background(MaterialTheme.colorScheme.primary) else Modifier
+                        if (qrContentType == QRContentType.LINK) Modifier.background(MaterialTheme.colorScheme.primary).clickable{
+uriHandler.openUri(uri = qrContent)
+                        } else Modifier
                     ),
                 onTextLayout = { layoutResult ->
                     isMaxLinesExceeded = layoutResult.hasVisualOverflow

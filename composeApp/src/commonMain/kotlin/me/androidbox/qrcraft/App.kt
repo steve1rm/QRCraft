@@ -13,10 +13,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import co.touchlab.kermit.Logger
 import me.androidbox.qrcraft.navigation.AppNavigation
 import me.androidbox.qrcraft.navigation.QrCraftNavGraph
 import me.androidbox.ui.AppTheme
@@ -32,9 +35,16 @@ import qrcraft.composeapp.generated.resources.scan_result
 fun App() {
 
     val navController = rememberNavController()
-    val currentRoute = navController.currentBackStackEntry?.destination?.route
+    val currentRoute = navController.currentBackStackEntryAsState()
 
-    val isScanResult = currentRoute?.startsWith(QrCraftNavGraph.QrCraftNavigation.ScanResult::class.qualifiedName!!) == true
+//        ?.destination?.route
+
+
+    val isScanResult = currentRoute.value?.destination?.route?.startsWith(QrCraftNavGraph.QrCraftNavigation.ScanResult::class.qualifiedName!!) == true
+
+    LaunchedEffect(currentRoute, isScanResult){
+Logger.e("currentRoute $currentRoute isScanResult $isScanResult")
+    }
 
     AppTheme {
         Scaffold(topBar = {
