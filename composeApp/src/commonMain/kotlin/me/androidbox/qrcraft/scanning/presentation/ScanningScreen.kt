@@ -71,20 +71,23 @@ fun ScanningScreen(
     var hasShownSnackBarOnce by remember { mutableStateOf(false) }
     val qrScannerPlugin = rememberQRScannerPlugin(coroutineScope)
 
-    LaunchedEffect(Unit) {
-        Logger.d {
-            "qrCode LaunchedEffect"
-        }
-        qrScannerPlugin
-            .getQrCodeFlow()
-       .distinctUntilChanged()
-            .collectLatest { qrCode ->
-                Logger.d ( tag = "Scanned code",
-                    messageString = "qrCode $qrCode")
-                onNavigateToScanResult(qrCode)
-                qrScannerPlugin.pauseScanning()
-            }
-    }
+     LaunchedEffect(Unit) {
+         Logger.d(
+             tag = "Scanned code",
+             messageString = "qrCode LaunchedEffect")
+
+         qrScannerPlugin
+             .getQrCodeFlow()
+             .distinctUntilChanged()
+             .collectLatest { qrCode ->
+                 Logger.d (
+                     tag = "Scanned code",
+                     messageString = "qrCode $qrCode")
+
+                 qrScannerPlugin.pauseScanning()
+                 onNavigateToScanResult(qrCode)
+             }
+     }
 
     LaunchedEffect(cameraPermissionState) {
         if (cameraPermissionState && !hasShownSnackBarOnce) {
