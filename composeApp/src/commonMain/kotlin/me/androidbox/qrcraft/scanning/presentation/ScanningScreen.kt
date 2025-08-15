@@ -58,7 +58,10 @@ fun ScanningScreen(
     var cameraController by remember {
         mutableStateOf<CameraController?>(null)
     }
-    var cameraPermissionState by remember { mutableStateOf(permissions.hasCameraPermission()) }
+
+    var cameraPermissionState by remember(permissions.hasCameraPermission()) {
+        mutableStateOf(permissions.hasCameraPermission())
+    }
     var shouldShowSystemPermissionsDialog by remember {
         mutableStateOf(cameraPermissionState)
     }
@@ -127,7 +130,7 @@ fun ScanningScreen(
 
 
                 ScanningSurfaceRoundedCorners(
-                    modifier = Modifier.size(324.dp), // Apply size here
+                    modifier = Modifier.size(324.dp),
                     surfaceRadius = 18.dp,     // How rounded the Surface itself is
                     lineColor = Color.Yellow,          // Color of the corner lines
                     lineStrokeWidth = 5.dp,          // Thickness of the corner lines
