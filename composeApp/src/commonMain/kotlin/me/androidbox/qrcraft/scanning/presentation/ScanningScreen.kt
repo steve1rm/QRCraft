@@ -41,7 +41,9 @@ import me.androidbox.qrcraft.permissions.PermissionDialog
 import me.androidbox.qrcraft.scanning.presentation.components.CustomSnackBarVisuals
 import me.androidbox.qrcraft.scanning.presentation.components.CustomSnackbar
 import me.androidbox.qrcraft.scanning.presentation.components.ScanningSurfaceRoundedCorners
+import me.androidbox.ui.AppTheme
 import me.androidbox.ui.appTypography
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import qrcraft.composeapp.generated.resources.Res
 import qrcraft.composeapp.generated.resources.tick
 
@@ -58,7 +60,10 @@ fun ScanningScreen(
     var cameraController by remember {
         mutableStateOf<CameraController?>(null)
     }
-    var cameraPermissionState by remember { mutableStateOf(permissions.hasCameraPermission()) }
+
+    var cameraPermissionState by remember(permissions) {
+        mutableStateOf(permissions.hasCameraPermission())
+    }
     var shouldShowSystemPermissionsDialog by remember {
         mutableStateOf(cameraPermissionState)
     }
@@ -66,20 +71,23 @@ fun ScanningScreen(
     var hasShownSnackBarOnce by remember { mutableStateOf(false) }
     val qrScannerPlugin = rememberQRScannerPlugin(coroutineScope)
 
-    LaunchedEffect(Unit) {
-        Logger.d {
-            "qrCode LaunchedEffect"
-        }
-        qrScannerPlugin
-            .getQrCodeFlow()
-       .distinctUntilChanged()
-            .collectLatest { qrCode ->
-                Logger.d ( tag = "Scanned code",
-                    messageString = "qrCode $qrCode")
-                onNavigateToScanResult(qrCode)
-                qrScannerPlugin.pauseScanning()
-            }
-    }
+     LaunchedEffect(Unit) {
+         Logger.d(
+             tag = "Scanned code",
+             messageString = "qrCode LaunchedEffect")
+
+         qrScannerPlugin
+             .getQrCodeFlow()
+             .distinctUntilChanged()
+             .collectLatest { qrCode ->
+                 Logger.d (
+                     tag = "Scanned code",
+                     messageString = "qrCode $qrCode")
+
+                 qrScannerPlugin.pauseScanning()
+                 onNavigateToScanResult(qrCode)
+             }
+     }
 
     LaunchedEffect(cameraPermissionState) {
         if (cameraPermissionState && !hasShownSnackBarOnce) {
@@ -120,14 +128,14 @@ fun ScanningScreen(
         content = { paddingValues ->
             BoxWithConstraints(
                 modifier = Modifier.fillMaxSize()
-                    .padding(paddingValues)
-                    .background(color = Color(0x00000000).copy(alpha = 0.50f)),
+                    .background(color = Color(0x00000000).copy(alpha = 0.50f))
+                    .padding(paddingValues = paddingValues),
                 contentAlignment = Alignment.Center) {
                 val boxHeight = this.maxHeight
 
 
                 ScanningSurfaceRoundedCorners(
-                    modifier = Modifier.size(324.dp), // Apply size here
+                    modifier = Modifier.size(324.dp),
                     surfaceRadius = 18.dp,     // How rounded the Surface itself is
                     lineColor = Color.Yellow,          // Color of the corner lines
                     lineStrokeWidth = 5.dp,          // Thickness of the corner lines
@@ -179,7 +187,14 @@ fun ScanningScreen(
     )
 }
 
-
-
-
+@Preview
+@Composable
+fun ScanningScreenPreview() {
+    AppTheme {
+        ScanningScreen(
+            onCloseClicked = {},
+            onNavigateToScanResult = {}
+        )
+    }
+}
 
