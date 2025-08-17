@@ -27,6 +27,7 @@ class PermissionsViewModel(
         }
     }
 
+
     fun provideOrRequestCameraPermission() {
         viewModelScope.launch {
             try {

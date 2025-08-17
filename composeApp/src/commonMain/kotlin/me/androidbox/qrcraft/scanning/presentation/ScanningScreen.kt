@@ -31,12 +31,12 @@ import com.kashif.cameraK.enums.FlashMode
 import com.kashif.cameraK.enums.ImageFormat
 import com.kashif.cameraK.enums.QualityPrioritization
 import com.kashif.cameraK.enums.TorchMode
-import com.kashif.cameraK.permissions.Permissions
-import com.kashif.cameraK.permissions.providePermissions
 import com.kashif.cameraK.ui.CameraPreview
 import com.kashif.qrscannerplugin.rememberQRScannerPlugin
+import dev.icerock.moko.permissions.PermissionState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 import me.androidbox.qrcraft.permissions.PermissionDialog
 import me.androidbox.qrcraft.scanning.presentation.components.CustomSnackBarVisuals
 import me.androidbox.qrcraft.scanning.presentation.components.CustomSnackbar
@@ -50,26 +50,28 @@ import qrcraft.composeapp.generated.resources.tick
  @Composable
 fun ScanningScreen(
     onCloseClicked: () -> Unit,
+    onProvidePermission: () -> Unit,
     modifier: Modifier = Modifier,
+    permissionState: PermissionState,
     onNavigateToScanResult: (String) -> Unit
 ) {
 
-    val permissions: Permissions = providePermissions()
-    val coroutineScope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
-    var cameraController by remember {
-        mutableStateOf<CameraController?>(null)
-    }
+     val coroutineScope = rememberCoroutineScope()
+     val snackbarHostState = remember { SnackbarHostState() }
+     var cameraController by remember {
+         mutableStateOf<CameraController?>(null)
+     }
 
-    var cameraPermissionState by remember(permissions) {
-        mutableStateOf(permissions.hasCameraPermission())
-    }
     var shouldShowSystemPermissionsDialog by remember {
-        mutableStateOf(cameraPermissionState)
-    }
+         mutableStateOf(false)
+     }
 
-    var hasShownSnackBarOnce by remember { mutableStateOf(false) }
-    val qrScannerPlugin = rememberQRScannerPlugin(coroutineScope)
+     var showQrCraftPermissionDialog by remember {
+         mutableStateOf(permissionState != PermissionState.Granted)
+     }
+
+     var hasShownSnackBarOnce by remember { mutableStateOf(false) }
+     val qrScannerPlugin = rememberQRScannerPlugin(coroutineScope)
 
      LaunchedEffect(Unit) {
          Logger.d(
@@ -89,32 +91,29 @@ fun ScanningScreen(
              }
      }
 
-    LaunchedEffect(cameraPermissionState) {
-        if (cameraPermissionState && !hasShownSnackBarOnce) {
-            hasShownSnackBarOnce = true
-
-            snackbarHostState.showSnackbar(
-                CustomSnackBarVisuals(
-                    message = "Camera permission granted",
-                    duration = SnackbarDuration.Short,
-                    drawableResource = Res.drawable.tick,
-                    containerColor = Color(0xff4caf50),
-                    contentColor = Color(0xFF273037)
-                )
-            )
-        }
-    }
-
     if(shouldShowSystemPermissionsDialog) {
-        permissions.RequestCameraPermission(
-            onGranted = {
-                cameraPermissionState = true
-            },
-            onDenied = {
-                cameraPermissionState = false
-            }
-        )
+        onProvidePermission()
     }
+
+     showQrCraftPermissionDialog = when(permissionState) {
+         PermissionState.Granted -> {
+             coroutineScope.launch {
+                 snackbarHostState.showSnackbar(
+                     CustomSnackBarVisuals(
+                         message = "Camera permission granted",
+                         duration = SnackbarDuration.Short,
+                         drawableResource = Res.drawable.tick,
+                         containerColor = Color(0xff4caf50),
+                         contentColor = Color(0xFF273037)
+                     )
+                 )
+             }
+             false
+         }
+         else -> {
+             true
+         }
+     }
 
     Scaffold(
         modifier = modifier,
@@ -172,7 +171,7 @@ fun ScanningScreen(
                     style = appTypography().titleMedium
                 )
 
-                if(!cameraPermissionState) {
+                if(showQrCraftPermissionDialog) {
                     PermissionDialog(
                         onCloseApp = onCloseClicked,
                         onGrantAccess = {
@@ -193,7 +192,9 @@ fun ScanningScreenPreview() {
     AppTheme {
         ScanningScreen(
             onCloseClicked = {},
-            onNavigateToScanResult = {}
+            onNavigateToScanResult = {},
+            permissionState = PermissionState.NotDetermined,
+            onProvidePermission = {}
         )
     }
 }
