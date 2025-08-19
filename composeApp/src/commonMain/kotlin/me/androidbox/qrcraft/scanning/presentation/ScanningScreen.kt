@@ -1,4 +1,4 @@
- package me.androidbox.qrcraft.scanning.presentation
+package me.androidbox.qrcraft.scanning.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -50,82 +50,86 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import qrcraft.composeapp.generated.resources.Res
 import qrcraft.composeapp.generated.resources.tick
 
- @Composable
+@Composable
 fun ScanningScreen(
     onCloseClicked: () -> Unit,
     onProvidePermission: () -> Unit,
     modifier: Modifier = Modifier,
     permissionState: PermissionState,
     onNavigateToScanResult: (String) -> Unit,
-    prefDataStore: PrefDataStore
+    prefDataStore: PrefDataStore,
 ) {
-     val coroutineScope = rememberCoroutineScope()
-     val snackbarHostState = remember { SnackbarHostState() }
-     var cameraController by remember {
-         mutableStateOf<CameraController?>(null)
-     }
+    val coroutineScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    var cameraController by remember {
+        mutableStateOf<CameraController?>(null)
+    }
 
     var shouldShowSystemPermissionsDialog by remember {
-         mutableStateOf(false)
-     }
+        mutableStateOf(false)
+    }
 
-     var showQrCraftPermissionDialog by remember {
-         mutableStateOf(permissionState != PermissionState.Granted)
-     }
+    var showQrCraftPermissionDialog by remember {
+        mutableStateOf(permissionState != PermissionState.Granted)
+    }
 
-     var hasShownSnackBarOnce by remember { mutableStateOf(false) }
-     val qrScannerPlugin = rememberQRScannerPlugin(coroutineScope)
+    var hasShownSnackBarOnce by remember { mutableStateOf(false) }
+    val qrScannerPlugin = rememberQRScannerPlugin(coroutineScope)
 
-     LaunchedEffect(Unit) {
-         Logger.d(
-             tag = "Scanned code",
-             messageString = "qrCode LaunchedEffect")
+    LaunchedEffect(Unit) {
+        Logger.d(
+            tag = "Scanned code",
+            messageString = "qrCode LaunchedEffect"
+        )
 
-         qrScannerPlugin
-             .getQrCodeFlow()
-             .distinctUntilChanged()
-             .collectLatest { qrCode ->
-                 Logger.d (
-                     tag = "Scanned code",
-                     messageString = "qrCode $qrCode")
+        qrScannerPlugin
+            .getQrCodeFlow()
+            .distinctUntilChanged()
+            .collectLatest { qrCode ->
+                Logger.d(
+                    tag = "Scanned code",
+                    messageString = "qrCode $qrCode"
+                )
 
-                 qrScannerPlugin.pauseScanning()
-                 onNavigateToScanResult(qrCode)
-             }
-     }
+                qrScannerPlugin.pauseScanning()
+                onNavigateToScanResult(qrCode)
+            }
+    }
 
-    if(shouldShowSystemPermissionsDialog) {
+    if (shouldShowSystemPermissionsDialog) {
         onProvidePermission()
     }
 
-     showQrCraftPermissionDialog = when(permissionState) {
-         PermissionState.Granted -> {
-             coroutineScope.launch {
-                 val hasShown = prefDataStore.data.firstOrNull()?.get(booleanPreferencesKey("snackbar")) == true
+    showQrCraftPermissionDialog = when (permissionState) {
+        PermissionState.Granted -> {
+            coroutineScope.launch {
+                val hasShown =
+                    prefDataStore.data.firstOrNull()?.get(booleanPreferencesKey("snackbar")) == true
 
-                 if(!hasShown) {
-                     snackbarHostState.showSnackbar(
-                         CustomSnackBarVisuals(
-                             message = "Camera permission granted",
-                             duration = SnackbarDuration.Short,
-                             drawableResource = Res.drawable.tick,
-                             containerColor = Color(0xff4caf50),
-                             contentColor = Color(0xFF273037)
-                         )
-                     )
+                if (!hasShown) {
+                    snackbarHostState.showSnackbar(
+                        CustomSnackBarVisuals(
+                            message = "Camera permission granted",
+                            duration = SnackbarDuration.Short,
+                            drawableResource = Res.drawable.tick,
+                            containerColor = Color(0xff4caf50),
+                            contentColor = Color(0xFF273037)
+                        )
+                    )
 
-                     prefDataStore.edit {
-                         it.set(booleanPreferencesKey("snackbar"), value = true)
-                     }
-                 }
-             }
+                    prefDataStore.edit {
+                        it.set(booleanPreferencesKey("snackbar"), value = true)
+                    }
+                }
+            }
 
-             false
-         }
-         else -> {
-             true
-         }
-     }
+            false
+        }
+
+        else -> {
+            true
+        }
+    }
 
     Scaffold(
         modifier = modifier,
@@ -138,39 +142,39 @@ fun ScanningScreen(
         },
         content = { paddingValues ->
             BoxWithConstraints(
-                modifier = Modifier.fillMaxSize()
-                    .background(color = Color(0x00000000).copy(alpha = 0.50f))
-                    .padding(paddingValues = paddingValues),
-                contentAlignment = Alignment.Center) {
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
                 val boxHeight = this.maxHeight
 
 
                 ScanningSurfaceRoundedCorners(
-                    modifier = Modifier.size(324.dp),
+                    modifier = Modifier.fillMaxSize(),
                     surfaceRadius = 18.dp,     // How rounded the Surface itself is
                     lineColor = Color.Yellow,          // Color of the corner lines
                     lineStrokeWidth = 5.dp,          // Thickness of the corner lines
                     lineExtensionLength = 32.dp,
-                    content =  {
-                    CameraPreview(
-                        cameraConfiguration = {
-                            setCameraLens(CameraLens.BACK)
-                            setFlashMode(FlashMode.OFF)
-                            setTorchMode(TorchMode.OFF)
-                            setImageFormat(ImageFormat.JPEG)
-                            setDirectory(Directory.PICTURES)
-                            setQualityPrioritization(QualityPrioritization.QUALITY)
-                            addPlugin(qrScannerPlugin)
-                        },
-                        onCameraControllerReady = {
-                            Logger.d {
-                                "qrCode startScanning"
-                            }
-                            cameraController = it
-                            qrScannerPlugin.startScanning()
-                        }
-                    )
-                })
+                    content = { modifier ->
+                        CameraPreview(
+                            cameraConfiguration = {
+                                setCameraLens(CameraLens.BACK)
+                                setFlashMode(FlashMode.OFF)
+                                setTorchMode(TorchMode.OFF)
+                                setImageFormat(ImageFormat.JPEG)
+                                setDirectory(Directory.PICTURES)
+                                setQualityPrioritization(QualityPrioritization.QUALITY)
+                                addPlugin(qrScannerPlugin)
+                            },
+                            onCameraControllerReady = {
+                                Logger.d {
+                                    "qrCode startScanning"
+                                }
+                                cameraController = it
+                                qrScannerPlugin.startScanning()
+                            },
+                            modifier = modifier
+                        )
+                    })
 
                 Text(
                     modifier = Modifier
@@ -183,7 +187,7 @@ fun ScanningScreen(
                     style = appTypography().titleMedium
                 )
 
-                if(showQrCraftPermissionDialog) {
+                if (showQrCraftPermissionDialog) {
                     PermissionDialog(
                         onCloseApp = onCloseClicked,
                         onGrantAccess = {
