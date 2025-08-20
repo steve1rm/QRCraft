@@ -34,13 +34,13 @@ fun appTypography(): Typography {
     val semiBoldFontFamily = FontFamily(Font(Res.font.suse_semibold))
 
     return Typography(
-        titleLarge = TextStyle(
+        titleMedium = TextStyle(
             fontFamily = semiBoldFontFamily,
             fontWeight = FontWeight.SemiBold,
             fontSize = 28.sp,
             lineHeight = 32.sp
         ),
-        titleMedium = TextStyle(
+        titleSmall = TextStyle(
             fontFamily = semiBoldFontFamily,
             fontWeight = FontWeight.SemiBold,
             fontSize = 19.sp,
@@ -57,14 +57,20 @@ fun appTypography(): Typography {
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp,
             lineHeight = 20.sp
+        ),
+        bodyMedium = TextStyle(
+            fontFamily = regularFontFamily,
+            fontWeight = FontWeight.Normal,
+            fontSize = 14.sp,
+            lineHeight = 16.sp
         )
-            )
+    )
 }
 
 @Composable
 fun AppTheme(
     darkTheme: Boolean = false,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val colors = LightColorScheme
 
