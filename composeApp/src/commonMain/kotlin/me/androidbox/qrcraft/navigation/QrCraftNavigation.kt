@@ -9,6 +9,7 @@ import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
+import me.androidbox.qrcraft.features.create_qr.choose_type.CreateQRChooseTypeScreen
 import me.androidbox.qrcraft.features.scan_result.presentation.ScanResultScreen
 import me.androidbox.qrcraft.navigation.QrCraftNavGraph.QrCraftNavigation
 import me.androidbox.qrcraft.permissions.PermissionsViewModel
@@ -53,6 +54,10 @@ fun NavGraphBuilder.qrCraftNavigation(
         composable<QrCraftNavigation.ScanResult> {
             val scanResultsRoute = it.toRoute<QrCraftNavigation.ScanResult>()
             ScanResultScreen(scannedQrCode = scanResultsRoute.scannedQrCode)
+        }
+
+        composable<QrCraftNavigation.CreateQRChooseType>{
+            CreateQRChooseTypeScreen()
         }
     }
 }

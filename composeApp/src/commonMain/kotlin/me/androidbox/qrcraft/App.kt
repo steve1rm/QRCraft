@@ -1,5 +1,13 @@
 package me.androidbox.qrcraft
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -13,10 +21,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import co.touchlab.kermit.Logger
+import me.androidbox.qrcraft.bottom_bar.CustomBottomBar
 import me.androidbox.qrcraft.navigation.AppNavigation
 import me.androidbox.qrcraft.navigation.QrCraftNavGraph
 import me.androidbox.qrcraft.scanning.presentation.PrefDataStore
@@ -35,19 +46,22 @@ fun App(
 ) {
 
     val navController = rememberNavController()
-    val currentRoute = navController.currentBackStackEntryAsState()
+    val backStackEntry = navController.currentBackStackEntryAsState()
 
-//        ?.destination?.route
+    val isScanResult = backStackEntry.value?.destination?.route?.startsWith(QrCraftNavGraph.QrCraftNavigation.ScanResult::class.qualifiedName!!) == true
+
+    val isScanningScreenLoaded = backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.Scan::class.qualifiedName
+    val isCreateQRChooseTypeScreenLoaded = backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.CreateQRChooseType::class.qualifiedName
+
+    val isBottomBarVisible = (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.Scan::class.qualifiedName) or (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.CreateQRChooseType::class.qualifiedName)
 
 
-    val isScanResult = currentRoute.value?.destination?.route?.startsWith(QrCraftNavGraph.QrCraftNavigation.ScanResult::class.qualifiedName!!) == true
-
-    LaunchedEffect(currentRoute, isScanResult){
-Logger.e("currentRoute $currentRoute isScanResult $isScanResult")
+    LaunchedEffect(backStackEntry, isScanResult) {
+        Logger.e("currentRoute $backStackEntry isScanResult $isScanResult")
     }
 
     AppTheme {
-        Scaffold(topBar = {
+        Scaffold(contentWindowInsets = WindowInsets.systemBars, topBar = {
             if (isScanResult) {
                 CenterAlignedTopAppBar(
                     title = {
@@ -76,13 +90,47 @@ Logger.e("currentRoute $currentRoute isScanResult $isScanResult")
                     )
                 )
             }
-        }) {
+        }, bottomBar = {
+
+            if (isBottomBarVisible) {
+                Box(
+                    modifier = Modifier.fillMaxWidth().wrapContentHeight().navigationBarsPadding()
+                        .then(
+                            if (isScanningScreenLoaded)
+                                Modifier.background(color = Color(0x00000000).copy(alpha = 0.50f))
+                            else
+                                Modifier.background(color = MaterialTheme.colorScheme.surface)
+                        ), contentAlignment = Alignment.Center
+                ) {
+
+                    CustomBottomBar(
+                        onHistoryClick = {},
+                        onScanClick = {
+                            navController.popBackStack(
+                                QrCraftNavGraph.QrCraftNavigation.Scan,
+                                inclusive = false
+                            )
+                        },
+                        onCreateQRClick = {
+
+                            navController.navigate(QrCraftNavGraph.QrCraftNavigation.CreateQRChooseType)
+                        },
+                        createQRHighlight = isCreateQRChooseTypeScreenLoaded
+                    )
+
+                }
+            }
+
+        }) { padding ->
+
+            val parentModifier = Modifier.padding(paddingValues = padding)
 
             AppNavigation(
                 navController = navController,
-                prefDataStore = prefDataStore)
+                prefDataStore = prefDataStore,
+                modifier = parentModifier
+            )
         }
-
 
         /*      Text(
                   text = getDeviceType().name,

@@ -12,7 +12,11 @@ import qrcraft.composeapp.generated.resources.type_text
 import qrcraft.composeapp.generated.resources.type_wifi
 
 enum class QRContentType {
-    LINK, CONTACT, PHONE_NUMBER, GEOLOCATION, WIFI, TEXT, UNDEFINED
+    TEXT, LINK, CONTACT, PHONE_NUMBER, GEOLOCATION, WIFI, UNDEFINED ;
+
+    companion object {
+        val validEntries = entries.filterNot { it == UNDEFINED }
+    }
 }
 
 @Composable
@@ -25,3 +29,17 @@ fun QRContentType.toDisplayName(): String = when (this) {
     QRContentType.TEXT -> stringResource(Res.string.type_text)
     QRContentType.UNDEFINED -> stringResource(Res.string.scan_result)
 }
+
+@Composable
+fun QRContentType.toSvgResource(): String = when (this) {
+    QRContentType.LINK -> "files/link.svg"
+    QRContentType.CONTACT -> "files/contact.svg"
+    QRContentType.PHONE_NUMBER -> "files/phone-number.svg"
+    QRContentType.GEOLOCATION -> "files/geolocation.svg"
+    QRContentType.WIFI -> "files/wifi.svg"
+    QRContentType.TEXT -> "files/text.svg"
+    QRContentType.UNDEFINED -> "files/link.svg"
+}
+
+
+
