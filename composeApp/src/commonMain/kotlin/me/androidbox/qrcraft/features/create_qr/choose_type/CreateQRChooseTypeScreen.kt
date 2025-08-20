@@ -26,7 +26,9 @@ import qrcraft.composeapp.generated.resources.Res
 import qrcraft.composeapp.generated.resources.create_qr
 
 @Composable
-fun CreateQRChooseTypeScreen(){
+fun CreateQRChooseTypeScreen(
+    onNavigateToCreateQR: (QRContentType) -> Unit,
+){
 
     val columns = if (getDeviceType() == WindowSizeClass.MOBILE) 2 else 3
 
@@ -38,7 +40,7 @@ fun CreateQRChooseTypeScreen(){
         val endGuideline = createGuidelineFromEnd(0.05f)
 
 
-        Text(text = stringResource(Res.string.create_qr), color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.titleLarge,
+        Text(text = stringResource(Res.string.create_qr), color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.titleMedium, // Also here need change style here too <--
             modifier = Modifier.constrainAs(txtCreateQr){
                 top.linkTo(parent.top,8.dp)
                 start.linkTo(startGuideline)
@@ -62,6 +64,7 @@ fun CreateQRChooseTypeScreen(){
 
                 QRTypeButton(qrContentType = qrContentType,onClick = {selectedQRContentType ->
                     Logger.e("selected $selectedQRContentType")
+                    onNavigateToCreateQR(selectedQRContentType)
                 }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.background, contentColor = MaterialTheme.colorScheme.onSurface), shape = AppShapes.large)
 
             }

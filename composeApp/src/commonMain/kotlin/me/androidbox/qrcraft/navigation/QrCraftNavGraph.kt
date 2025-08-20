@@ -1,6 +1,7 @@
 package me.androidbox.qrcraft.navigation
 
 import kotlinx.serialization.Serializable
+import me.androidbox.qrcraft.features.scan_result.domain.QRContentType
 
 @Serializable
 sealed interface QrCraftNavGraph {
@@ -14,6 +15,9 @@ sealed interface QrCraftNavGraph {
         data class ScanResult(val scannedQrCode: String) : QrCraftNavGraph
 
         @Serializable
-        object CreateQRChooseType: QrCraftNavGraph
+        object CreateQRChooseType : QrCraftNavGraph
+
+        @Serializable
+        data class CreateQR(val type: QRContentType) : QrCraftNavGraph
     }
 }

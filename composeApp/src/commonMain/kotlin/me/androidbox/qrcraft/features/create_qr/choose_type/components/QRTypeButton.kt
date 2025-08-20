@@ -50,7 +50,7 @@ fun QRTypeButton(
             )
             Text(
                 text = qrContentType.toDisplayName(),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleSmall, // Denis sorry there was change in theme so i have to change this style unless we have vewy bad ui :)
                 modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(top = 16.dp),
                 textAlign = TextAlign.Center
             )

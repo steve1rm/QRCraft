@@ -10,15 +10,19 @@ import androidx.navigation.toRoute
 import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import me.androidbox.qrcraft.features.create_qr.choose_type.CreateQRChooseTypeScreen
+import me.androidbox.qrcraft.features.create_qr.choose_type.CreateQRScreenRoot
 import me.androidbox.qrcraft.features.scan_result.presentation.ScanResultScreen
 import me.androidbox.qrcraft.navigation.QrCraftNavGraph.QrCraftNavigation
 import me.androidbox.qrcraft.permissions.PermissionsViewModel
 import me.androidbox.qrcraft.scanning.presentation.PrefDataStore
 import me.androidbox.qrcraft.scanning.presentation.ScanningScreen
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 fun NavGraphBuilder.qrCraftNavigation(
     navHostController: NavHostController,
-    prefDataStore: PrefDataStore) {
+    prefDataStore: PrefDataStore,
+) {
     this.navigation<QrCraftNavigation>(
         startDestination = QrCraftNavigation.Scan
     ) {
@@ -56,8 +60,32 @@ fun NavGraphBuilder.qrCraftNavigation(
             ScanResultScreen(scannedQrCode = scanResultsRoute.scannedQrCode)
         }
 
-        composable<QrCraftNavigation.CreateQRChooseType>{
-            CreateQRChooseTypeScreen()
+        composable<QrCraftNavigation.CreateQRChooseType> {
+            CreateQRChooseTypeScreen(
+                onNavigateToCreateQR = {
+                    navHostController.navigate(QrCraftNavigation.CreateQR(it))
+                }
+            )
+        }
+
+        composable<QrCraftNavigation.CreateQR> { backStackEntry ->
+            val args = backStackEntry.toRoute<QrCraftNavigation.CreateQR>()
+            CreateQRScreenRoot(
+                onNavigateBack = {
+                    navHostController.navigateUp()
+                },
+                onNavigateToResult = { result ->
+                    // TODO Please implement navigation logic here, Steve
+
+                },
+                viewModel = koinViewModel(
+                    parameters = {
+                        parametersOf(
+                            args.type
+                        )
+                    }
+                )
+            )
         }
     }
 }

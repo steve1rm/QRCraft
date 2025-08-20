@@ -180,7 +180,7 @@ fun ScanningScreen(
                     textAlign = TextAlign.Center,
                     text = "Point your camera a the QR Code",
                     color = Color.White,
-                    style = appTypography().titleMedium
+                    style = appTypography().titleSmall
                 )
 
                 if(showQrCraftPermissionDialog) {
