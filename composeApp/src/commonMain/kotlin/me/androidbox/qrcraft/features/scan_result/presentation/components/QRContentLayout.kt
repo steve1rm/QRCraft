@@ -1,11 +1,17 @@
 package me.androidbox.qrcraft.features.scan_result.presentation.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,8 +21,8 @@ import me.androidbox.ui.AppTheme
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import qrcraft.composeapp.generated.resources.Res
-import qrcraft.composeapp.generated.resources.copy1
-import qrcraft.composeapp.generated.resources.share1
+import qrcraft.composeapp.generated.resources.copy
+import qrcraft.composeapp.generated.resources.share
 
 @Composable
 fun QRContentLayout(
@@ -28,7 +34,10 @@ fun QRContentLayout(
 ) {
     Column(
         modifier = modifier
-    ) {
+            .background(color = MaterialTheme.colorScheme.background,
+            RoundedCornerShape(16.dp))
+            .padding(16.dp)
+        ) {
         Text(
             text = title
         )
@@ -46,9 +55,11 @@ fun QRContentLayout(
                 onClick = onShareClicked
             ) {
                Icon(
-                   imageVector = vectorResource(Res.drawable.share1),
+                   imageVector = vectorResource(Res.drawable.share),
                     contentDescription = "Share"
                 )
+
+                Spacer(modifier = Modifier.width(8.dp))
 
                 Text(
                     text = "Share"
@@ -60,9 +71,11 @@ fun QRContentLayout(
                 onClick = onShareClicked
             ) {
                Icon(
-                    imageVector = vectorResource(Res.drawable.copy1),
+                    imageVector = vectorResource(Res.drawable.copy),
                     contentDescription = "Share"
                 )
+
+                Spacer(modifier = Modifier.width(8.dp))
 
                 Text(
                     text = "Copy"

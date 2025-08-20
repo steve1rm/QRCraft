@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import me.androidbox.qrcraft.core.utils.qrCraftPrefDataStore
+import me.androidbox.qrcraft.create.QRPreviewScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,9 +25,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             val prefDataStore = remember { applicationContext.qrCraftPrefDataStore }
 
-            App(
+            QRPreviewScreen()
+
+           /* App(
                 prefDataStore = prefDataStore
-            )
+            )*/
         }
     }
 }
