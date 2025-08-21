@@ -42,11 +42,11 @@ fun QRContentLayout(
 
     Box(
         modifier = Modifier.fillMaxWidth(),
-        contentAlignment = Alignment.TopCenter // helps align children easily
+        contentAlignment = Alignment.TopCenter
     ) {
         Column(
             modifier = modifier
-                .padding(top = 100.dp) // add padding so content doesn't overlap with image
+                .padding(top = 100.dp)
                 .background(
                     color = MaterialTheme.colorScheme.background,
                     RoundedCornerShape(16.dp)
@@ -87,7 +87,7 @@ fun QRContentLayout(
 
                 Button(
                     modifier = Modifier.weight(1f),
-                    onClick = onShareClicked
+                    onClick = onCopyClicked
                 ) {
                     Icon(
                         imageVector = vectorResource(Res.drawable.copy),
