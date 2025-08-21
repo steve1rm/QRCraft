@@ -26,7 +26,10 @@ import qrcraft.composeapp.generated.resources.arrow_left
 
 @Composable
 fun QRPreviewScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    title: String,
+    details: String,
+    qrContent: String
 ) {
     Scaffold(
         modifier = modifier,
@@ -60,8 +63,9 @@ fun QRPreviewScreen(
                     .padding(top = 44.dp)
             ) {
                 QRContentLayout(
-                    title = "QR Code Result",
-                    details = "In the grand tapestry of existence, where threads of chance and choice intertwine, the relentless march of time ushers forth an ever-changing landscape of opportunities and challenges. Consider the humble artisan, meticulously shaping raw materials into objects of beauty and utility. Their dedication, a silent testament to the enduring power of human creativity, echoes through generations. Each hammer fall, each brushstroke, each carefully considered detail contributes to a legacy far greater than the sum of its parts. It is this persistent pursuit of excellence, this unwavering commitment to craft, that often distinguishes the remarkable from the mundane.",
+                    title = title,
+                    details = details,
+                    qrContent = qrContent,
                     onCopyClicked = {},
                     onShareClicked = {}
                 )
@@ -74,6 +78,10 @@ fun QRPreviewScreen(
 @Composable
 fun QRPreviewScreenPreview() {
     AppTheme {
-        QRPreviewScreen()
+        QRPreviewScreen(
+            title = "QR Code Result",
+            details = "In the grand tapestry of existence, where threads of chance and choice intertwine, the relentless march of time ushers forth an ever-changing landscape of opportunities and challenges. Consider the humble artisan, meticulously shaping raw materials into objects of beauty and utility. Their dedication, a silent testament to the enduring power of human creativity, echoes through generations. Each hammer fall, each brushstroke, each carefully considered detail contributes to a legacy far greater than the sum of its parts. It is this persistent pursuit of excellence, this unwavering commitment to craft, that often distinguishes the remarkable from the mundane.",
+            qrContent = ""
+        )
     }
 }
