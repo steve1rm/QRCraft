@@ -114,7 +114,6 @@ fun QRContentLayout(
     }
 }
 
-
 @Preview
 @Composable
 fun QRContentLayoutPreview() {
