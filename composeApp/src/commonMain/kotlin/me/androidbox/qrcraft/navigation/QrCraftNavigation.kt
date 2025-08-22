@@ -12,6 +12,9 @@ import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import me.androidbox.qrcraft.create.QRPreviewScreen
 import me.androidbox.qrcraft.features.create_qr.choose_type.CreateQRChooseTypeScreen
 import me.androidbox.qrcraft.features.create_qr.choose_type.CreateQRScreenRoot
+import me.androidbox.qrcraft.features.scan_result.domain.detectQRContentType
+import me.androidbox.qrcraft.features.scan_result.domain.extractQRContent
+import me.androidbox.qrcraft.features.scan_result.domain.toDisplayName
 import me.androidbox.qrcraft.features.scan_result.presentation.ScanResultScreen
 import me.androidbox.qrcraft.navigation.QrCraftNavGraph.QrCraftNavigation
 import me.androidbox.qrcraft.permissions.PermissionsViewModel
@@ -95,9 +98,13 @@ fun NavGraphBuilder.qrCraftNavigation(
         composable<QrCraftNavigation.QrPreview> {
             val qrContentRoute = it.toRoute<QrCraftNavigation.QrPreview>()
 
+            val qrContentType = detectQRContentType(scannedQrCode = qrContentRoute.scannedQrCode)
+            val qrContent = extractQRContent(scannedQRCode = qrContentRoute.scannedQrCode, qrContentType = qrContentType)
+            val text = qrContentType.toDisplayName()
+
             QRPreviewScreen(
-                title = qrContentRoute.title,
-                details = qrContentRoute.details,
+                title = text,
+                details = qrContent,
                 qrContent = qrContentRoute.scannedQrCode,
                 onBackClick = {
                     navHostController.popBackStack()
