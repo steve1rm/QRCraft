@@ -15,6 +15,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import me.androidbox.qrcraft.core.utils.rememberShareManager
 import me.androidbox.qrcraft.features.scan_result.presentation.components.QRContentLayout
 import me.androidbox.ui.AppTheme
 import org.jetbrains.compose.resources.vectorResource
@@ -30,6 +31,8 @@ fun QRPreviewScreen(
     details: String,
     qrContent: String
 ) {
+    val shareManager = rememberShareManager()
+
     Scaffold(
         modifier = modifier,
         containerColor = MaterialTheme.colorScheme.onSurface,
@@ -67,7 +70,9 @@ fun QRPreviewScreen(
                     details = details,
                     qrContent = qrContent,
                     onCopyClicked = {},
-                    onShareClicked = {}
+                    onShareClicked = {
+                        shareManager.shareText(title)
+                    }
                 )
             }
         }
