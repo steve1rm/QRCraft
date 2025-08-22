@@ -100,9 +100,7 @@ fun NavGraphBuilder.qrCraftNavigation(
                 details = qrContentRoute.details,
                 qrContent = qrContentRoute.scannedQrCode,
                 onBackClick = {
-                    navHostController.popBackStack<QrCraftNavigation.QrPreview>(
-                        inclusive = true
-                    )
+                    navHostController.popBackStack()
                 }
             )
         }
