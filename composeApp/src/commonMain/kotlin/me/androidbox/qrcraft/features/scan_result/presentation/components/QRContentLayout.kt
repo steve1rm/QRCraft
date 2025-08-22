@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import me.androidbox.ui.AppTheme
 import me.androidbox.ui.SurfaceHigher
@@ -62,7 +63,9 @@ fun QRContentLayout(
             Spacer(modifier = Modifier.height(124.dp))
 
             Text(
-                text = title
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -81,7 +84,10 @@ fun QRContentLayout(
                         Modifier
                     }
                 ),
-                text = details
+                text = details,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Start
             )
 
             Spacer(modifier = Modifier.height(24.dp))
