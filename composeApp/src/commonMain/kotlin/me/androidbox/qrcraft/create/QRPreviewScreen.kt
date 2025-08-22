@@ -85,7 +85,7 @@ fun QRPreviewScreen(
                         }
                     },
                     onShareClicked = {
-                        shareManager.shareText(title)
+                        shareManager.shareText(details)
                     }
                 )
             }
