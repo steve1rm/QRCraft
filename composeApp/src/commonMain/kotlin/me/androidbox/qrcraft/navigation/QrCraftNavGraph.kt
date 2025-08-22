@@ -13,5 +13,7 @@ sealed interface QrCraftNavGraph {
         @Serializable
         data class ScanResult(val scannedQrCode: String) : QrCraftNavGraph
 
+        @Serializable
+        data class QrPreview(val scannedQrCode: String, val title: String, val details: String) : QrCraftNavGraph
     }
 }
