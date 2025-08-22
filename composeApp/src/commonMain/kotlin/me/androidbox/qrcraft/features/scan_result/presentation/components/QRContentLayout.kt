@@ -1,6 +1,7 @@
 package me.androidbox.qrcraft.features.scan_result.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,8 +38,10 @@ fun QRContentLayout(
     title: String,
     details: String,
     qrContent: String,
+    isLink: Boolean,
     onShareClicked: () -> Unit,
-    onCopyClicked: () -> Unit
+    onCopyClicked: () -> Unit,
+    onLinkClicked: (url: String) -> Unit
 ) {
 
     Box(
@@ -65,6 +68,19 @@ fun QRContentLayout(
             Spacer(modifier = Modifier.height(10.dp))
 
             Text(
+                modifier = Modifier.then(
+                    if(isLink) {
+                        Modifier
+                            .clickable {
+                                onLinkClicked(details)
+                            }
+                            .background(MaterialTheme
+                                .colorScheme.primary)
+                    }
+                    else {
+                        Modifier
+                    }
+                ),
                 text = details
             )
 
@@ -141,8 +157,10 @@ fun QRContentLayoutPreview() {
             title = "QR Code Result",
             details = "In the grand tapestry of existence, where threads of chance and choice intertwine, the relentless march of time ushers forth an ever-changing landscape of opportunities and challenges. Consider the humble artisan, meticulously shaping raw materials into objects of beauty and utility. Their dedication, a silent testament to the enduring power of human creativity, echoes through generations. Each hammer fall, each brushstroke, each carefully considered detail contributes to a legacy far greater than the sum of its parts. It is this persistent pursuit of excellence, this unwavering commitment to craft, that often distinguishes the remarkable from the mundane.",
             qrContent = "",
+            isLink = false,
             onShareClicked = {},
-            onCopyClicked = {}
+            onCopyClicked = {},
+            onLinkClicked = {}
         )
     }
 }

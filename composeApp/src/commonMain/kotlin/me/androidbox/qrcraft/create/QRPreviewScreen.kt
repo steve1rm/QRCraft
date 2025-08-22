@@ -17,6 +17,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.buildAnnotatedString
 import kotlinx.coroutines.launch
 import me.androidbox.qrcraft.core.utils.rememberShareManager
@@ -33,11 +34,13 @@ fun QRPreviewScreen(
     onBackClick: () -> Unit,
     title: String,
     details: String,
-    qrContent: String
+    qrContent: String,
+    isLink: Boolean
 ) {
     val shareManager = rememberShareManager()
     val clipboard = LocalClipboardManager.current
     val coroutineScope = rememberCoroutineScope()
+    val urlHandler = LocalUriHandler.current
 
     Scaffold(
         modifier = modifier,
@@ -75,6 +78,7 @@ fun QRPreviewScreen(
                     title = title,
                     details = details,
                     qrContent = qrContent,
+                    isLink = isLink,
                     onCopyClicked = {
                         coroutineScope.launch {
                            clipboard.setText(
@@ -86,6 +90,9 @@ fun QRPreviewScreen(
                     },
                     onShareClicked = {
                         shareManager.shareText(details)
+                    },
+                    onLinkClicked = { url ->
+                        urlHandler.openUri(url)
                     }
                 )
             }
@@ -101,7 +108,8 @@ fun QRPreviewScreenPreview() {
             title = "QR Code Result",
             details = "In the grand tapestry of existence, where threads of chance and choice intertwine, the relentless march of time ushers forth an ever-changing landscape of opportunities and challenges. Consider the humble artisan, meticulously shaping raw materials into objects of beauty and utility. Their dedication, a silent testament to the enduring power of human creativity, echoes through generations. Each hammer fall, each brushstroke, each carefully considered detail contributes to a legacy far greater than the sum of its parts. It is this persistent pursuit of excellence, this unwavering commitment to craft, that often distinguishes the remarkable from the mundane.",
             qrContent = "",
-            onBackClick = {}
+            onBackClick = {},
+            isLink = false
         )
     }
 }

@@ -12,6 +12,7 @@ import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import me.androidbox.qrcraft.create.QRPreviewScreen
 import me.androidbox.qrcraft.features.create_qr.choose_type.CreateQRChooseTypeScreen
 import me.androidbox.qrcraft.features.create_qr.choose_type.CreateQRScreenRoot
+import me.androidbox.qrcraft.features.scan_result.domain.QRContentType
 import me.androidbox.qrcraft.features.scan_result.domain.detectQRContentType
 import me.androidbox.qrcraft.features.scan_result.domain.extractQRContent
 import me.androidbox.qrcraft.features.scan_result.domain.toDisplayName
@@ -106,6 +107,7 @@ fun NavGraphBuilder.qrCraftNavigation(
                 title = text,
                 details = qrContent,
                 qrContent = qrContentRoute.scannedQrCode,
+                isLink = qrContentType == QRContentType.LINK,
                 onBackClick = {
                     navHostController.popBackStack()
                 }
