@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -45,7 +46,6 @@ import me.androidbox.qrcraft.scanning.presentation.components.CustomSnackBarVisu
 import me.androidbox.qrcraft.scanning.presentation.components.CustomSnackbar
 import me.androidbox.qrcraft.scanning.presentation.components.ScanningSurfaceRoundedCorners
 import me.androidbox.ui.AppTheme
-import me.androidbox.ui.appTypography
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import qrcraft.composeapp.generated.resources.Res
 import qrcraft.composeapp.generated.resources.tick
@@ -180,7 +180,7 @@ fun ScanningScreen(
                     textAlign = TextAlign.Center,
                     text = "Point your camera a the QR Code",
                     color = Color.White,
-                    style = appTypography().titleMedium
+                    style = MaterialTheme.typography.titleSmall
                 )
 
                 if(showQrCraftPermissionDialog) {

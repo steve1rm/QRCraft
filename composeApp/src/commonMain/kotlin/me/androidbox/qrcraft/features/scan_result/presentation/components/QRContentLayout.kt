@@ -17,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -111,18 +112,26 @@ fun QRContentLayout(
             }
         }
 
-        QRCodeImage(
-            url = qrContent,
-            modifier = Modifier
-                .size(200.dp)
-                .align(Alignment.TopCenter)
-                .offset(y = -(0).dp)
-                .background(
-                    color = SurfaceHigher,
-                    shape = RoundedCornerShape(16.dp)
-                ),
-            contentDescription = "Scanned QR Code"
-        )
+        Surface(
+            modifier = Modifier.size(200.dp),
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.background,
+            shadowElevation = 2.dp
+        ) {
+            QRCodeImage(
+                url = qrContent,
+                modifier = Modifier
+                    .size(200.dp)
+                    .align(Alignment.TopCenter)
+                    .offset(y = -(0).dp)
+                    .background(
+                        color = SurfaceHigher,
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                    .padding(4.dp),
+                contentDescription = "Scanned QR Code"
+            )
+        }
     }
 }
 
