@@ -1,5 +1,7 @@
 package me.androidbox.ui
 
+import androidx.compose.material3.ColorScheme
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 // Base UI Colors
@@ -11,6 +13,14 @@ val OnSurfaceAlt = Color(0xFF505F6A)
 val Overlay = Color(0x80000000) // 50% Black
 val OnOverlay = Color(0xFFFFFFFF)
 val OnSurfaceDisabled = Color(0xFF8C99A2)
+
+val ColorScheme.bgGradient: Brush
+    get() = Brush.linearGradient(
+        listOf(
+            Color(0xff58A1F8),
+            Color(0xff5A4CF7)
+        )
+    )
 
 // Link
 val Link = Color(0xFF373F05)
