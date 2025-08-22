@@ -3,20 +3,17 @@
 package me.androidbox.qrcraft.create
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import me.androidbox.qrcraft.features.scan_result.presentation.components.QRContentLayout
 import me.androidbox.ui.AppTheme
 import org.jetbrains.compose.resources.vectorResource
@@ -35,11 +32,9 @@ fun QRPreviewScreen(
         modifier = modifier,
         containerColor = MaterialTheme.colorScheme.onSurface,
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
                         text = "Preview",
                         color = Color.White
                     )
@@ -60,7 +55,6 @@ fun QRPreviewScreen(
             Box(
                 modifier = Modifier
                     .padding(paddingValues)
-                    .padding(top = 44.dp)
             ) {
                 QRContentLayout(
                     title = title,
