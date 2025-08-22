@@ -98,7 +98,12 @@ fun NavGraphBuilder.qrCraftNavigation(
             QRPreviewScreen(
                 title = qrContentRoute.title,
                 details = qrContentRoute.details,
-                qrContent = qrContentRoute.scannedQrCode
+                qrContent = qrContentRoute.scannedQrCode,
+                onBackClick = {
+                    navHostController.popBackStack<QrCraftNavigation.QrPreview>(
+                        inclusive = true
+                    )
+                }
             )
         }
     }
