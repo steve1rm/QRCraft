@@ -13,8 +13,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.buildAnnotatedString
+import kotlinx.coroutines.launch
 import me.androidbox.qrcraft.core.utils.rememberShareManager
 import me.androidbox.qrcraft.features.scan_result.presentation.components.QRContentLayout
 import me.androidbox.ui.AppTheme
@@ -32,6 +36,8 @@ fun QRPreviewScreen(
     qrContent: String
 ) {
     val shareManager = rememberShareManager()
+    val clipboard = LocalClipboardManager.current
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         modifier = modifier,
@@ -69,7 +75,15 @@ fun QRPreviewScreen(
                     title = title,
                     details = details,
                     qrContent = qrContent,
-                    onCopyClicked = {},
+                    onCopyClicked = {
+                        coroutineScope.launch {
+                           clipboard.setText(
+                               buildAnnotatedString {
+                                   append(details)
+                               }
+                           )
+                        }
+                    },
                     onShareClicked = {
                         shareManager.shareText(title)
                     }
