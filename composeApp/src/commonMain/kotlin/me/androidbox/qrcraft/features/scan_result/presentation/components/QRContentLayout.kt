@@ -112,11 +112,11 @@ fun QRContentLayout(
         }
 
         QRCodeImage(
-            url = "",
+            url = qrContent,
             modifier = Modifier
                 .size(200.dp)
-                .align(Alignment.TopCenter) // centers image horizontally at top of Box
-                .offset(y = -(0).dp) // move half of image height upwards to overlap
+                .align(Alignment.TopCenter)
+                .offset(y = -(0).dp)
                 .background(
                     color = SurfaceHigher,
                     shape = RoundedCornerShape(16.dp)
