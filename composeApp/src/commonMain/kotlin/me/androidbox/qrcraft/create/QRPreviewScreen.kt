@@ -40,7 +40,8 @@ fun QRPreviewScreen(
     title: String,
     details: String,
     qrContent: String,
-    isLink: Boolean
+    isLink: Boolean,
+    isText: Boolean
 ) {
     val shareManager = rememberShareManager()
     val clipboard = LocalClipboardManager.current
@@ -91,6 +92,7 @@ fun QRPreviewScreen(
                 details = details,
                 qrContent = qrContent,
                 isLink = isLink,
+                isText = isText,
                 onCopyClicked = {
                     coroutineScope.launch {
                         clipboard.setText(
@@ -120,7 +122,8 @@ fun QRPreviewScreenPreview() {
             details = "In the grand tapestry of existence, where threads of chance and choice intertwine, the relentless march of time ushers forth an ever-changing landscape of opportunities and challenges. Consider the humble artisan, meticulously shaping raw materials into objects of beauty and utility. Their dedication, a silent testament to the enduring power of human creativity, echoes through generations. Each hammer fall, each brushstroke, each carefully considered detail contributes to a legacy far greater than the sum of its parts. It is this persistent pursuit of excellence, this unwavering commitment to craft, that often distinguishes the remarkable from the mundane.",
             qrContent = "",
             onBackClick = {},
-            isLink = false
+            isLink = false,
+            isText = true
         )
     }
 }

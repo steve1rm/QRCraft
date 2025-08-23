@@ -41,6 +41,7 @@ fun QRContentLayout(
     details: String,
     qrContent: String,
     isLink: Boolean,
+    isText: Boolean,
     onShareClicked: () -> Unit,
     onCopyClicked: () -> Unit,
     onLinkClicked: (url: String) -> Unit
@@ -71,7 +72,7 @@ fun QRContentLayout(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            if(isLink) {
+            if(isLink || !isText) {
                 Text(
                     modifier = Modifier.then(
                         if (isLink) {
@@ -90,7 +91,7 @@ fun QRContentLayout(
                     text = details,
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface,
-                    textAlign = TextAlign.Start
+                    textAlign = TextAlign.Center
                 )
             }
             else {
@@ -185,6 +186,7 @@ fun QRContentLayoutPreview() {
             details = "In the grand tapestry of existence, where threads of chance and choice intertwine, the relentless march of time ushers forth an ever-changing landscape of opportunities and challenges. Consider the humble artisan, meticulously shaping raw materials into objects of beauty and utility. Their dedication, a silent testament to the enduring power of human creativity, echoes through generations. Each hammer fall, each brushstroke, each carefully considered detail contributes to a legacy far greater than the sum of its parts. It is this persistent pursuit of excellence, this unwavering commitment to craft, that often distinguishes the remarkable from the mundane the relentless march of time ushers forth an ever-changing landscape of opportunities and challenges. Consider the humble artisan, meticulously shaping raw materials into objects of beauty and utility. Their dedication, a silent testament to the enduring power of human creativity, echoes through generations",
             qrContent = "",
             isLink = false,
+            isText = true,
             onShareClicked = {},
             onCopyClicked = {},
             onLinkClicked = {}
