@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import me.androidbox.qrcraft.create.ExpandableText
 import me.androidbox.ui.AppTheme
 import me.androidbox.ui.SurfaceHigher
 import org.jetbrains.compose.resources.vectorResource
@@ -70,25 +71,45 @@ fun QRContentLayout(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            Text(
-                modifier = Modifier.then(
-                    if(isLink) {
-                        Modifier
-                            .clickable {
-                                onLinkClicked(details)
-                            }
-                            .background(MaterialTheme
-                                .colorScheme.primary)
-                    }
-                    else {
-                        Modifier
-                    }
-                ),
-                text = details,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface,
-                textAlign = TextAlign.Start
-            )
+            if(isLink) {
+                Text(
+                    modifier = Modifier.then(
+                        if (isLink) {
+                            Modifier
+                                .clickable {
+                                    onLinkClicked(details)
+                                }
+                                .background(
+                                    MaterialTheme
+                                        .colorScheme.primary
+                                )
+                        } else {
+                            Modifier
+                        }
+                    ),
+                    text = details,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Start
+                )
+            }
+            else {
+                ExpandableText(
+                    modifier =  Modifier.then(
+                        if(isLink) {
+                            Modifier
+                                .clickable {
+                                    onLinkClicked(details)
+                                }
+                                .background(MaterialTheme
+                                    .colorScheme.primary)
+                        }
+                        else {
+                            Modifier
+                        }),
+                    text = details
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -161,7 +182,7 @@ fun QRContentLayoutPreview() {
     AppTheme {
         QRContentLayout(
             title = "QR Code Result",
-            details = "In the grand tapestry of existence, where threads of chance and choice intertwine, the relentless march of time ushers forth an ever-changing landscape of opportunities and challenges. Consider the humble artisan, meticulously shaping raw materials into objects of beauty and utility. Their dedication, a silent testament to the enduring power of human creativity, echoes through generations. Each hammer fall, each brushstroke, each carefully considered detail contributes to a legacy far greater than the sum of its parts. It is this persistent pursuit of excellence, this unwavering commitment to craft, that often distinguishes the remarkable from the mundane.",
+            details = "In the grand tapestry of existence, where threads of chance and choice intertwine, the relentless march of time ushers forth an ever-changing landscape of opportunities and challenges. Consider the humble artisan, meticulously shaping raw materials into objects of beauty and utility. Their dedication, a silent testament to the enduring power of human creativity, echoes through generations. Each hammer fall, each brushstroke, each carefully considered detail contributes to a legacy far greater than the sum of its parts. It is this persistent pursuit of excellence, this unwavering commitment to craft, that often distinguishes the remarkable from the mundane the relentless march of time ushers forth an ever-changing landscape of opportunities and challenges. Consider the humble artisan, meticulously shaping raw materials into objects of beauty and utility. Their dedication, a silent testament to the enduring power of human creativity, echoes through generations",
             qrContent = "",
             isLink = false,
             onShareClicked = {},

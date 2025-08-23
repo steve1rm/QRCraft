@@ -15,8 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.sp
 import me.androidbox.ui.AppTheme
+import me.androidbox.ui.OnSurfaceAlt
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import qrcraft.composeapp.generated.resources.Res
@@ -26,7 +29,7 @@ import qrcraft.composeapp.generated.resources.show_more
 fun ExpandableText(
     text: String,
     modifier: Modifier = Modifier,
-    collapsedMaxLine: Int = 3
+    collapsedMaxLine: Int = 6
 ) {
     var isExpanded by remember {
         mutableStateOf(false)
@@ -53,13 +56,15 @@ fun ExpandableText(
                         .dropLastWhile {
                             it.isWhitespace() || it == '.'
                         }
+
                     append(adjustedText)
                     append("...")
 
                     withStyle(
                         style = SpanStyle(
-                            color = primary,
-                            fontWeight = FontWeight.Bold
+                            color = OnSurfaceAlt,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 16.sp
                         )
                     ) {
                         append(showMoreText)
@@ -72,6 +77,9 @@ fun ExpandableText(
 
     Text(
         text = textToShow,
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onSurface,
+        textAlign = TextAlign.Start,
         maxLines = if(isExpanded) Int.MAX_VALUE else collapsedMaxLine,
         modifier = modifier
             .fillMaxWidth()
