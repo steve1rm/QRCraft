@@ -3,6 +3,8 @@
 package me.androidbox.qrcraft.create
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -10,7 +12,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -47,72 +48,67 @@ fun QRPreviewScreen(
     val urlHandler = LocalUriHandler.current
     val deviceType = getDeviceType()
 
-    Scaffold(
-        modifier = modifier,
-        containerColor = MaterialTheme.colorScheme.onSurface,
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = "Preview",
-                        color = Color.White
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        CenterAlignedTopAppBar(
+            title = {
+                Text(
+                    text = "Preview",
+                    color = Color.White
+                )
+            },
+            navigationIcon = {
+                IconButton(
+                    onClick = onBackClick
+                ) {
+                    Icon(
+                        imageVector = vectorResource(Res.drawable.arrow_left),
+                        contentDescription = "Navigate back",
+                        tint = Color.White
                     )
-                },
-                navigationIcon = {
-                    IconButton(
-                        onClick = onBackClick
-                    ) {
-                        Icon(
-                            imageVector = vectorResource(Res.drawable.arrow_left),
-                            contentDescription = "Navigate back",
-                            tint = Color.White
+                }
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.onSurface
+            )
+        )
+
+        Box(
+            modifier = Modifier
+                .padding(horizontal = if (WindowSizeClass.MOBILE == deviceType) 24.dp else 0.dp)
+        ) {
+
+            QRContentLayout(
+                modifier = Modifier.then(
+                    if (WindowSizeClass.TABLET == deviceType) {
+                        Modifier.width(480.dp)
+                    } else {
+                        Modifier
+                    }
+                ),
+                title = title,
+                details = details,
+                qrContent = qrContent,
+                isLink = isLink,
+                onCopyClicked = {
+                    coroutineScope.launch {
+                        clipboard.setText(
+                            buildAnnotatedString {
+                                append(details)
+                            }
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.onSurface
-                )
+                onShareClicked = {
+                    shareManager.shareText(details)
+                },
+                onLinkClicked = { url ->
+                    urlHandler.openUri(url)
+                }
             )
-        },
-        content = { paddingValues ->
-            Box(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .padding(horizontal = if(WindowSizeClass.MOBILE == deviceType) 24.dp else 0.dp)
-            ) {
-
-                QRContentLayout(
-                    modifier = Modifier.then(
-                        if(WindowSizeClass.TABLET == deviceType) {
-                            Modifier.width(480.dp)
-                        }
-                        else {
-                            Modifier
-                        }
-                    ),
-                    title = title,
-                    details = details,
-                    qrContent = qrContent,
-                    isLink = isLink,
-                    onCopyClicked = {
-                        coroutineScope.launch {
-                           clipboard.setText(
-                               buildAnnotatedString {
-                                   append(details)
-                               }
-                           )
-                        }
-                    },
-                    onShareClicked = {
-                        shareManager.shareText(details)
-                    },
-                    onLinkClicked = { url ->
-                        urlHandler.openUri(url)
-                    }
-                )
-            }
         }
-    )
+    }
 }
 
 @Preview
