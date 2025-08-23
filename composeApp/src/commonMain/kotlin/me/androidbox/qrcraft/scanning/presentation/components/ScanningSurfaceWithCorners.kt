@@ -35,7 +35,6 @@ fun ScanningSurfaceRoundedCorners(
 ) {
     Surface(
         modifier = modifier,
-        shape = RoundedCornerShape(surfaceRadius)
     ) {
         Box(
             modifier = Modifier
