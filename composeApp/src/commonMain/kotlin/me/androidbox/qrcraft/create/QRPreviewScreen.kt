@@ -4,6 +4,7 @@ package me.androidbox.qrcraft.create
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -19,7 +20,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import me.androidbox.qrcraft.core.presentation.responsive.WindowSizeClass
+import me.androidbox.qrcraft.core.presentation.responsive.getDeviceType
 import me.androidbox.qrcraft.core.utils.rememberShareManager
 import me.androidbox.qrcraft.features.scan_result.presentation.components.QRContentLayout
 import me.androidbox.ui.AppTheme
@@ -41,6 +45,7 @@ fun QRPreviewScreen(
     val clipboard = LocalClipboardManager.current
     val coroutineScope = rememberCoroutineScope()
     val urlHandler = LocalUriHandler.current
+    val deviceType = getDeviceType()
 
     Scaffold(
         modifier = modifier,
@@ -73,8 +78,18 @@ fun QRPreviewScreen(
             Box(
                 modifier = Modifier
                     .padding(paddingValues)
+                    .padding(horizontal = if(WindowSizeClass.MOBILE == deviceType) 24.dp else 0.dp)
             ) {
+
                 QRContentLayout(
+                    modifier = Modifier.then(
+                        if(WindowSizeClass.TABLET == deviceType) {
+                            Modifier.width(480.dp)
+                        }
+                        else {
+                            Modifier
+                        }
+                    ),
                     title = title,
                     details = details,
                     qrContent = qrContent,
