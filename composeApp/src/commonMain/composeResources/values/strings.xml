@@ -1,0 +1,25 @@
+<resources>
+
+    <string name="camera_required">Camera Required</string>
+    <string name="camera_message">This app cannot function without camera access. To scan QR codes, please grant permission.</string>
+    <string name="close_app">Close App</string>
+    <string name="grant_access">Grant Access</string>
+
+    <!--ScanResultScreen-->
+    <string name="scan_result">Scan Result</string>
+    <string name="share">Share</string>
+    <string name="copy">Copy</string>
+    <string name="show_more">Show more</string>
+    <string name="show_less">Show less</string>
+
+    <string name="type_link">Link</string>
+    <string name="type_contact">Contact</string>
+    <string name="type_phone_number">Phone Number</string>
+    <string name="type_geolocation">Geolocation</string>
+    <string name="type_wifi">Wi-fi</string>
+    <string name="type_text">Text</string>
+
+    <!--CreateQRScreen-->
+    <string name="create_qr">Create QR</string>
+
+</resources>

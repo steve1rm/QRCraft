@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -7,6 +6,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlin.serialization)
+
 }
 
 kotlin {
@@ -32,7 +33,16 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.core.splashscreen)
+            implementation(libs.koin.android)
+            implementation(libs.koin.compose)
+            implementation(libs.androidx.camera.core)
+            implementation(libs.androidx.camera.compose)
+            implementation(libs.androidx.camera.lifecycle)
+            implementation(libs.androidx.camera.camera2)
+            implementation(libs.accompanist.permissions)
         }
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -42,6 +52,23 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            api(libs.moko.permissions)
+            api(libs.moko.permissions.compose)
+            implementation(libs.navigation.compose)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.camerak)
+            implementation(libs.qr.scanner.plugin)
+            implementation(libs.kermit)
+            implementation(libs.permissions.camera)
+            implementation(libs.material.icons.extended)
+            implementation(libs.constraintlayout.compose.multiplatform)
+            implementation(libs.coil.svg)
+            implementation(libs.core)
+            implementation(libs.qr.kit)
+            implementation(libs.datastore)
+            implementation(libs.datastore.preferences)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
