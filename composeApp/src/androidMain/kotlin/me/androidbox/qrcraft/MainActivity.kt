@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val prefDataStore = remember { applicationContext.qrCraftPrefDataStore }
 
-            App(
+           App(
                 prefDataStore = prefDataStore
             )
         }
