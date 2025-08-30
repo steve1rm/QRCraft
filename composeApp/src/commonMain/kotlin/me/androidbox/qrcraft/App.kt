@@ -122,7 +122,6 @@ fun App(
             }
 
         }) { padding ->
-
             val parentModifier = Modifier.padding(paddingValues = padding)
 
             AppNavigation(
@@ -131,10 +130,5 @@ fun App(
                 modifier = parentModifier
             )
         }
-
-        /*      Text(
-                  text = getDeviceType().name,
-                  modifier = Modifier.padding(top = 100.dp)
-              )*/
     }
 }
