@@ -2,8 +2,10 @@
 
 package me.androidbox.qrcraft.create
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -50,7 +52,9 @@ fun QRPreviewScreen(
     val deviceType = getDeviceType()
 
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.onSurface)
     ) {
         CenterAlignedTopAppBar(
             title = {

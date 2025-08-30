@@ -50,7 +50,7 @@ fun App(
 
     val isScanResult = backStackEntry.value?.destination?.route?.startsWith(QrCraftNavGraph.QrCraftNavigation.ScanResult::class.qualifiedName!!) == true
 
-    val isScanningScreenLoaded = backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.Scan::class.qualifiedName
+    val isScanningScreen = backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.Scan::class.qualifiedName
     val isCreateQRChooseTypeScreenLoaded = backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.CreateQRChooseType::class.qualifiedName
 
     val isBottomBarVisible = (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.Scan::class.qualifiedName) or (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.CreateQRChooseType::class.qualifiedName)
@@ -96,8 +96,8 @@ fun App(
                 Box(
                     modifier = Modifier.fillMaxWidth().wrapContentHeight().navigationBarsPadding()
                         .then(
-                            if (isScanningScreenLoaded)
-                                Modifier.background(color = Color(0x00000000).copy(alpha = 0.50f))
+                            if (isScanningScreen)
+                                Modifier.background(color = Color.Transparent)
                             else
                                 Modifier.background(color = MaterialTheme.colorScheme.surface)
                         ), contentAlignment = Alignment.Center
@@ -127,7 +127,7 @@ fun App(
             AppNavigation(
                 navController = navController,
                 prefDataStore = prefDataStore,
-                modifier = parentModifier
+                modifier = if(!isScanningScreen) parentModifier else Modifier
             )
         }
     }
