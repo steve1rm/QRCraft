@@ -82,7 +82,6 @@ fun CustomBottomBar(
             }
         }
 
-
         IconButton(
             onClick = onScanClick,
             modifier = Modifier
