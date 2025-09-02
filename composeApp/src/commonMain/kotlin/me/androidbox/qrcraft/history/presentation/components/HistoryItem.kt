@@ -19,11 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import me.androidbox.qrcraft.history.domain.HistoryItemsType
 import me.androidbox.ui.AppTheme
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import qrcraft.composeapp.generated.resources.Res
-import qrcraft.composeapp.generated.resources.wifi
 
 @Composable
 fun HistoryItem(
@@ -87,12 +86,12 @@ fun HistoryItem(
 fun HistoryItemPreview() {
     AppTheme {
         HistoryItem(
-            title = "Geolocation",
+            title = HistoryItemsType.GEOLOCATION.title,
             details = "Adipiscing ipsum lacinia tincidunt sed. In risus dui accumsan accumsan quam morbi nulla. Dictum justo metus auctor nunc quam id sed. Urna nisi gravida sed lobortis diam pretium.",
             dateTime = "31 Jul 2023 10:24",
             icon = {
                 Icon(
-                    imageVector = vectorResource(Res.drawable.wifi),
+                    imageVector = vectorResource(HistoryItemsType.GEOLOCATION.image),
                     contentDescription = "Info"
                 )
             }
