@@ -23,7 +23,8 @@ private val LightColorScheme = lightColorScheme(
     background = SurfaceHigher,
     onBackground = OnSurfaceAlt,
     error = Error,
-    onError = SurfaceHigher
+    onError = SurfaceHigher,
+    outline = Outline
 )
 
 @Composable
@@ -51,6 +52,12 @@ fun appTypography(): Typography {
             fontWeight = FontWeight.Medium,
             fontSize = 16.sp,
             lineHeight = 20.sp
+        ),
+        labelMedium = TextStyle(
+            fontFamily = mediumFontFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 14.sp,
+            lineHeight = 16.sp
         ),
         bodyLarge = TextStyle(
             fontFamily = regularFontFamily,

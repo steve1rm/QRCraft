@@ -13,6 +13,7 @@ val OnSurfaceAlt = Color(0xFF505F6A)
 val Overlay = Color(0x80000000) // 50% Black
 val OnOverlay = Color(0xFFFFFFFF)
 val OnSurfaceDisabled = Color(0xFF8C99A2)
+val Outline = Color(0xffCCD5DC)
 
 val ColorScheme.bgGradient: Brush
     get() = Brush.linearGradient(
