@@ -53,7 +53,9 @@ fun App(
     val isScanningScreen = backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.Scan::class.qualifiedName
     val isCreateQRChooseTypeScreenLoaded = backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.CreateQRChooseType::class.qualifiedName
 
-    val isBottomBarVisible = (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.Scan::class.qualifiedName) or (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.CreateQRChooseType::class.qualifiedName)
+    val isBottomBarVisible = (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.Scan::class.qualifiedName) or
+            (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.CreateQRChooseType::class.qualifiedName) or
+            (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.History::class.qualifiedName)
 
 
     LaunchedEffect(backStackEntry, isScanResult) {
@@ -104,7 +106,10 @@ fun App(
                 ) {
 
                     CustomBottomBar(
-                        onHistoryClick = {},
+                        onHistoryClick = {
+
+                            navController.navigate(QrCraftNavGraph.QrCraftNavigation.History)
+                        },
                         onScanClick = {
                             navController.popBackStack(
                                 QrCraftNavGraph.QrCraftNavigation.Scan,

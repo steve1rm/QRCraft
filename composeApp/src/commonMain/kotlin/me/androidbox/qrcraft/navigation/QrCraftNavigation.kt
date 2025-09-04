@@ -17,6 +17,7 @@ import me.androidbox.qrcraft.features.scan_result.domain.detectQRContentType
 import me.androidbox.qrcraft.features.scan_result.domain.extractQRContent
 import me.androidbox.qrcraft.features.scan_result.domain.toDisplayName
 import me.androidbox.qrcraft.features.scan_result.presentation.ScanResultScreen
+import me.androidbox.qrcraft.history.presentation.HistoryRoot
 import me.androidbox.qrcraft.navigation.QrCraftNavGraph.QrCraftNavigation
 import me.androidbox.qrcraft.permissions.PermissionsViewModel
 import me.androidbox.qrcraft.scanning.presentation.PrefDataStore
@@ -26,7 +27,8 @@ import org.koin.core.parameter.parametersOf
 
 fun NavGraphBuilder.qrCraftNavigation(
     navHostController: NavHostController,
-    prefDataStore: PrefDataStore) {
+    prefDataStore: PrefDataStore,
+) {
     this.navigation<QrCraftNavigation>(
         startDestination = QrCraftNavigation.Scan
     ) {
@@ -59,6 +61,10 @@ fun NavGraphBuilder.qrCraftNavigation(
             )
         }
 
+        composable<QrCraftNavigation.History> {
+            HistoryRoot()
+        }
+
         composable<QrCraftNavigation.ScanResult> {
             val scanResultsRoute = it.toRoute<QrCraftNavigation.ScanResult>()
             ScanResultScreen(scannedQrCode = scanResultsRoute.scannedQrCode)
@@ -79,11 +85,13 @@ fun NavGraphBuilder.qrCraftNavigation(
                     navHostController.navigateUp()
                 },
                 onNavigateToResult = { result ->
-                    navHostController.navigate(QrCraftNavigation.QrPreview(
-                        scannedQrCode = result,
-                        title = "Title",
-                        details = "Details"
-                    ))
+                    navHostController.navigate(
+                        QrCraftNavigation.QrPreview(
+                            scannedQrCode = result,
+                            title = "Title",
+                            details = "Details"
+                        )
+                    )
 
                 },
                 viewModel = koinViewModel(
@@ -100,7 +108,10 @@ fun NavGraphBuilder.qrCraftNavigation(
             val qrContentRoute = it.toRoute<QrCraftNavigation.QrPreview>()
 
             val qrContentType = detectQRContentType(scannedQrCode = qrContentRoute.scannedQrCode)
-            val qrContent = extractQRContent(scannedQRCode = qrContentRoute.scannedQrCode, qrContentType = qrContentType)
+            val qrContent = extractQRContent(
+                scannedQRCode = qrContentRoute.scannedQrCode,
+                qrContentType = qrContentType
+            )
             val text = qrContentType.toDisplayName()
 
             QRPreviewScreen(

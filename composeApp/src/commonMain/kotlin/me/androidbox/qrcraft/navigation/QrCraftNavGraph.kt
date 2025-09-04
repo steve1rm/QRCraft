@@ -12,6 +12,9 @@ sealed interface QrCraftNavGraph {
         object Scan : QrCraftNavGraph
 
         @Serializable
+        object History : QrCraftNavGraph
+
+        @Serializable
         data class ScanResult(val scannedQrCode: String) : QrCraftNavGraph
 
         @Serializable
