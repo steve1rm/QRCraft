@@ -1,4 +1,4 @@
-package me.androidbox.qrcraft.history.domain
+package me.androidbox.qrcraft.history.presentation.model
 
 import org.jetbrains.compose.resources.DrawableResource
 import qrcraft.composeapp.generated.resources.Res

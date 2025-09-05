@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import me.androidbox.qrcraft.history.domain.HistoryItemsType
+import me.androidbox.qrcraft.history.presentation.model.HistoryItemsType
 import me.androidbox.ui.AppTheme
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
