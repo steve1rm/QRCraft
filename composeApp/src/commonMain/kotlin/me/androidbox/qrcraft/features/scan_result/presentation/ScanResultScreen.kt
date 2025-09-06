@@ -2,6 +2,7 @@ package me.androidbox.qrcraft.features.scan_result.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,36 +12,50 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.touchlab.kermit.Logger
 import coil3.compose.AsyncImage
+import me.androidbox.qrcraft.core.data.MAX_CHARACTER_LENGTH
 import me.androidbox.qrcraft.core.utils.rememberShareManager
 import me.androidbox.qrcraft.features.scan_result.domain.QRContentType
 import me.androidbox.qrcraft.features.scan_result.domain.detectQRContentType
 import me.androidbox.qrcraft.features.scan_result.domain.extractQRContent
 import me.androidbox.qrcraft.features.scan_result.domain.toDisplayName
 import me.androidbox.ui.AppShapes
+import me.androidbox.ui.GrayTxtFldHint
 import me.androidbox.ui.OnSurface
 import me.androidbox.ui.OnSurfaceAlt
 import me.androidbox.ui.OnSurfaceDisabled
@@ -51,12 +66,21 @@ import qrcraft.composeapp.generated.resources.copy
 import qrcraft.composeapp.generated.resources.share
 import qrcraft.composeapp.generated.resources.show_less
 import qrcraft.composeapp.generated.resources.show_more
+
 import qrgenerator.QRCodeImage
 
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ScanResultScreen(scannedQrCode: String) {
+fun ScanResultScreen(scannedQrCode: String, qrEntryViewModel: QREntryViewModel) {
     Logger.e("scannedCode $scannedQrCode")
+
+    val shareManager = rememberShareManager()
+    val clipboard = LocalClipboardManager.current
+    val uriHandler = LocalUriHandler.current
+    val focusManager = LocalFocusManager.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
 
     var qrContentType by remember {
         mutableStateOf(QRContentType.UNDEFINED)
@@ -64,15 +88,19 @@ fun ScanResultScreen(scannedQrCode: String) {
 
     LaunchedEffect(scannedQrCode) {
         qrContentType = detectQRContentType(scannedQrCode = scannedQrCode)
+
     }
 
     var qrContent by remember {
         mutableStateOf("")
     }
+
+
     LaunchedEffect(qrContentType) {
         if (qrContentType != QRContentType.UNDEFINED) {
             qrContent =
                 extractQRContent(scannedQRCode = scannedQrCode, qrContentType = qrContentType)
+
         }
     }
 
@@ -87,11 +115,37 @@ fun ScanResultScreen(scannedQrCode: String) {
 
     var isMaxLinesExceeded by remember { mutableStateOf(false) }
 
-    val shareManager = rememberShareManager()
-    val clipboard = LocalClipboardManager.current
+
+    var currentQrContentType by remember {
+        mutableStateOf("")
+    }
 
 
-    val uriHandler = LocalUriHandler.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { source, event ->
+
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_STOP) {
+                qrEntryViewModel.addQREntry(
+                    contentType = currentQrContentType.ifEmpty {  qrContentType.name},
+                    content = qrContent
+                )
+            }
+
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+
+        }
+    }
+
+    val allEntries by qrEntryViewModel.allEntries.collectAsStateWithLifecycle()
+    LaunchedEffect(allEntries) {
+        Logger.e("allEntries ${allEntries.size}")
+        allEntries.forEach { entry ->
+            Logger.e("allEntries ${entry.createdAt}")
+        }
+    }
 
 
     ConstraintLayout(modifier = Modifier.fillMaxSize().background(OnSurface)) {
@@ -113,21 +167,67 @@ fun ScanResultScreen(scannedQrCode: String) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 
-            Text(
-                qrContentType.toDisplayName(),
-                style = MaterialTheme.typography.titleMedium,
-                color = OnSurface,
-                modifier = Modifier.padding(top = 64.dp, start = 16.dp, end = 16.dp)
+            TextField(
+                value = currentQrContentType,
+                onValueChange = { changedValue ->
+                    if (changedValue.length <= MAX_CHARACTER_LENGTH)
+                    currentQrContentType = changedValue
+                },
+                textStyle = MaterialTheme.typography.titleMedium.copy(
+                    textAlign = TextAlign.Center
+                ),
+                placeholder = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            qrContentType.toDisplayName(),
+                            style = MaterialTheme.typography.titleMedium,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                },
+                modifier = Modifier.padding(top = 64.dp, start = 16.dp, end = 16.dp).fillMaxWidth(),
+                singleLine = true,
+                colors = TextFieldDefaults.colors(
+                    unfocusedTextColor = OnSurface,
+                    focusedTextColor = OnSurface,
+                    unfocusedContainerColor = Surface,
+                    focusedContainerColor = Surface,
+                    unfocusedPlaceholderColor = GrayTxtFldHint,
+                    focusedPlaceholderColor = GrayTxtFldHint,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    cursorColor = MaterialTheme.colorScheme.primary
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                 /*       qrEntryViewModel.addQREntry(
+                            contentType = currentQrContentType.ifEmpty { qrContentType.name },
+                            content = qrContent
+                        )*/
+                    },
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                )
             )
+
+
             Text(
                 text = qrContent,
                 style = MaterialTheme.typography.bodyLarge,
                 color = OnSurface,
                 modifier = Modifier.wrapContentWidth().wrapContentHeight()
                     .padding(top = 16.dp, start = 16.dp, end = 16.dp).then(
-                        if (qrContentType == QRContentType.LINK) Modifier.background(MaterialTheme.colorScheme.primary).clickable{
-uriHandler.openUri(uri = qrContent)
-                        } else Modifier
+                        if (qrContentType == QRContentType.LINK) Modifier.background(MaterialTheme.colorScheme.primary)
+                            .clickable {
+                                uriHandler.openUri(uri = qrContent)
+                            } else Modifier
                     ),
                 onTextLayout = { layoutResult ->
                     isMaxLinesExceeded = layoutResult.hasVisualOverflow

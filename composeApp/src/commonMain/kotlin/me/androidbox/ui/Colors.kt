@@ -50,3 +50,5 @@ val PhoneBG = Color(0x1AC86017) // 10%
 // WiFi
 val WiFi = Color(0xFF1F44CD)
 val WiFiBG = Color(0x1A1F44CD) // 10%
+
+val GrayTxtFldHint = Color(0xFFC5CBCF)

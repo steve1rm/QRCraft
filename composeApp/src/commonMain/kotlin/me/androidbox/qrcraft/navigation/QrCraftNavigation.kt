@@ -16,6 +16,7 @@ import me.androidbox.qrcraft.features.scan_result.domain.QRContentType
 import me.androidbox.qrcraft.features.scan_result.domain.detectQRContentType
 import me.androidbox.qrcraft.features.scan_result.domain.extractQRContent
 import me.androidbox.qrcraft.features.scan_result.domain.toDisplayName
+import me.androidbox.qrcraft.features.scan_result.presentation.QREntryViewModel
 import me.androidbox.qrcraft.features.scan_result.presentation.ScanResultScreen
 import me.androidbox.qrcraft.history.presentation.HistoryRoot
 import me.androidbox.qrcraft.navigation.QrCraftNavGraph.QrCraftNavigation
@@ -28,6 +29,7 @@ import org.koin.core.parameter.parametersOf
 fun NavGraphBuilder.qrCraftNavigation(
     navHostController: NavHostController,
     prefDataStore: PrefDataStore,
+    qrEntryViewModel: QREntryViewModel
 ) {
     this.navigation<QrCraftNavigation>(
         startDestination = QrCraftNavigation.Scan
@@ -67,7 +69,7 @@ fun NavGraphBuilder.qrCraftNavigation(
 
         composable<QrCraftNavigation.ScanResult> {
             val scanResultsRoute = it.toRoute<QrCraftNavigation.ScanResult>()
-            ScanResultScreen(scannedQrCode = scanResultsRoute.scannedQrCode)
+            ScanResultScreen(scannedQrCode = scanResultsRoute.scannedQrCode, qrEntryViewModel = qrEntryViewModel)
         }
 
         composable<QrCraftNavigation.CreateQRChooseType> {

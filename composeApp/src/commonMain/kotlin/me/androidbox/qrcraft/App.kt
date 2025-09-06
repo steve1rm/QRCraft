@@ -28,6 +28,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import co.touchlab.kermit.Logger
 import me.androidbox.qrcraft.bottom_bar.CustomBottomBar
+import me.androidbox.qrcraft.features.scan_result.presentation.QREntryViewModel
 import me.androidbox.qrcraft.navigation.AppNavigation
 import me.androidbox.qrcraft.navigation.QrCraftNavGraph
 import me.androidbox.qrcraft.scanning.presentation.PrefDataStore
@@ -35,6 +36,7 @@ import me.androidbox.ui.AppTheme
 import me.androidbox.ui.OnSurface
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 import qrcraft.composeapp.generated.resources.Res
 import qrcraft.composeapp.generated.resources.scan_result
 
@@ -57,6 +59,8 @@ fun App(
             (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.CreateQRChooseType::class.qualifiedName) or
             (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.History::class.qualifiedName)
 
+
+    val qrEntryViewModel : QREntryViewModel = koinViewModel()
 
     LaunchedEffect(backStackEntry, isScanResult) {
         Logger.e("currentRoute $backStackEntry isScanResult $isScanResult")
@@ -132,6 +136,7 @@ fun App(
             AppNavigation(
                 navController = navController,
                 prefDataStore = prefDataStore,
+                qrEntryViewModel = qrEntryViewModel,
                 modifier = if(!isScanningScreen) parentModifier else Modifier
             )
         }
