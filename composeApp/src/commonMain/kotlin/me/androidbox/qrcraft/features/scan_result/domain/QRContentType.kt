@@ -30,7 +30,6 @@ fun QRContentType.toDisplayName(): String = when (this) {
     QRContentType.UNDEFINED -> stringResource(Res.string.scan_result)
 }
 
-@Composable
 fun QRContentType.toSvgResource(): String = when (this) {
     QRContentType.LINK -> "files/link.svg"
     QRContentType.CONTACT -> "files/contact.svg"
