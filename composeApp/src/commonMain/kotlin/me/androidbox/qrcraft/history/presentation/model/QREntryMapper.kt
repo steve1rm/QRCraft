@@ -1,0 +1,36 @@
+package me.androidbox.qrcraft.history.presentation.model
+
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import me.androidbox.qrcraft.features.scan_result.data.db.QREntry
+import me.androidbox.qrcraft.features.scan_result.domain.QRContentType
+import me.androidbox.qrcraft.features.scan_result.domain.toSvgResource
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
+
+fun QREntry.toQREntryUi(): QREntryUi {
+    return QREntryUi(
+        id = this.id,
+        contentType = this.contentType,
+        content = this.content,
+        qrType = this.qrType,
+        createdAtFormatted = this.createdAt.toFormattedDate(),
+        iconUrl = getIconUrlFromContentType(this.contentType)
+    )
+}
+
+private fun getIconUrlFromContentType(contentType: String): String {
+    return QRContentType.validEntries.find { it.name == contentType }?.toSvgResource() ?: ""
+}
+
+@OptIn(ExperimentalTime::class)
+private fun Long.toFormattedDate(): String {
+    val timeZone = TimeZone.currentSystemDefault()
+    val date = Instant.fromEpochMilliseconds(this).toLocalDateTime(timeZone)
+    val year = date.year
+    val day = date.day
+    val month = date.month.name.take(3).lowercase().replaceFirstChar { it.uppercase() }
+    val hour = date.time.hour
+    val minute = date.time.minute
+    return "$day $month $year, $hour:$minute"
+}

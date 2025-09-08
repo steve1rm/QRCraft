@@ -2,13 +2,17 @@ package me.androidbox.qrcraft.history.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -22,14 +26,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.compose.AsyncImage
+import me.androidbox.qrcraft.features.scan_result.domain.QRContentType
+import me.androidbox.qrcraft.features.scan_result.domain.QRType
+import me.androidbox.qrcraft.features.scan_result.domain.toSvgResource
+import me.androidbox.qrcraft.history.presentation.components.HistoryItem
 import me.androidbox.qrcraft.history.presentation.model.HistoryTab
 import me.androidbox.ui.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
+import qrcraft.composeapp.generated.resources.Res
 
 @Composable
 fun HistoryRoot(
-    viewModel: HistoryViewModel = viewModel(),
+    viewModel: HistoryViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -101,15 +111,24 @@ fun HistoryScreen(
 
         Spacer(Modifier.height(12.dp))
 
-        when (state.selectedTab) {
-            HistoryTab.SCANNED -> {
-                Text(
-                    text = "SCANNED"
-                )
-            }
-            HistoryTab.GENERATED -> {
-                Text(
-                    text = "GENERATED"
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(state.items) { item ->
+                HistoryItem(
+                    title = item.contentType,
+                    details = item.content,
+                    dateTime = item.createdAtFormatted,
+                    icon = {
+                        AsyncImage(
+                            model = Res.getUri(item.iconUrl),
+                            contentDescription = null,
+                            modifier = Modifier.size(32.dp),
+                        )
+                    }
                 )
             }
         }

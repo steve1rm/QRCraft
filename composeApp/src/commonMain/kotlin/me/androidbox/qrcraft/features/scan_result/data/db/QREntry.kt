@@ -7,5 +7,11 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 @Entity
-class QREntry @OptIn(ExperimentalTime::class) constructor(@PrimaryKey(autoGenerate = true) val id: Int = 0, val contentType: String, val content: String, val qrType: QRType = QRType.SCANNED, val createdAt: Long = Clock.System.now().toEpochMilliseconds()){
+class QREntry @OptIn(ExperimentalTime::class) constructor(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val contentType: String,
+    val content: String,
+    val qrType: QRType = QRType.SCANNED,
+    val createdAt: Long = Clock.System.now().toEpochMilliseconds(),
+) {
 }

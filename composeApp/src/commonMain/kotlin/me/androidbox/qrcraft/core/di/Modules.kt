@@ -8,6 +8,7 @@ import me.androidbox.qrcraft.features.scan_result.data.DefaultQREntryRepository
 import me.androidbox.qrcraft.features.scan_result.domain.QRContentType
 import me.androidbox.qrcraft.features.scan_result.domain.QREntryRepository
 import me.androidbox.qrcraft.features.scan_result.presentation.QREntryViewModel
+import me.androidbox.qrcraft.history.presentation.HistoryViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
@@ -17,9 +18,11 @@ import org.koin.dsl.module
 
 val qrModule = module {
 
-    viewModel { (type : QRContentType) ->
+    viewModel { (type: QRContentType) ->
         CreateQRScreenViewModel(type)
     }
+
+
 }
 
 expect val platformModule: Module
@@ -27,7 +30,8 @@ expect val platformModule: Module
 val sharedModule = module {
 
     single {
-        get<DatabaseFactory>().create().setDriver(BundledSQLiteDriver()).fallbackToDestructiveMigration(true).build()
+        get<DatabaseFactory>().create().setDriver(BundledSQLiteDriver())
+            .fallbackToDestructiveMigration(true).build()
     }
 
     single {
@@ -35,6 +39,7 @@ val sharedModule = module {
     }
 
     viewModelOf(::QREntryViewModel)
+    viewModelOf(::HistoryViewModel)
     singleOf(::DefaultQREntryRepository).bind<QREntryRepository>()
 
 }
