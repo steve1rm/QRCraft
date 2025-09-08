@@ -11,4 +11,5 @@ interface QREntryRepository {
     val generatedEntries: Flow<List<QREntry>>
 
     suspend fun addQREntry(qrEntry: QREntry)
+    suspend fun deleteQREntry(qrEntry: QREntry)
 }

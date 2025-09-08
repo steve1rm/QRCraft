@@ -5,7 +5,7 @@ import me.androidbox.qrcraft.features.scan_result.data.db.QREntry
 import me.androidbox.qrcraft.features.scan_result.data.db.QREntryDao
 import me.androidbox.qrcraft.features.scan_result.domain.QREntryRepository
 
-class DefaultQREntryRepository(val qrEntryDao: QREntryDao): QREntryRepository {
+class DefaultQREntryRepository(val qrEntryDao: QREntryDao) : QREntryRepository {
 
     override val allEntries: Flow<List<QREntry>> = qrEntryDao.getAllEntries()
 
@@ -15,5 +15,9 @@ class DefaultQREntryRepository(val qrEntryDao: QREntryDao): QREntryRepository {
 
     override suspend fun addQREntry(qrEntry: QREntry) {
         qrEntryDao.insert(qrEntry)
+    }
+
+    override suspend fun deleteQREntry(qrEntry: QREntry) {
+        qrEntryDao.deleteEntry(qrEntry)
     }
 }
