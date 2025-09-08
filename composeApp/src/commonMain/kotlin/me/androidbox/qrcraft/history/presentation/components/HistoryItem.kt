@@ -1,5 +1,6 @@
 package me.androidbox.qrcraft.history.presentation.components
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import me.androidbox.qrcraft.history.presentation.model.HistoryItemsType
@@ -30,10 +32,18 @@ fun HistoryItem(
     details: String,
     dateTime: String,
     modifier: Modifier = Modifier,
-    icon: @Composable () -> Unit
+    onLongClick: () -> Unit,
+    icon: @Composable () -> Unit,
 ) {
     Card(
-        modifier = modifier,
+        modifier = modifier
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onLongPress = {
+                        onLongClick()
+                    }
+                )
+            },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerHighest
@@ -59,7 +69,8 @@ fun HistoryItem(
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurface)
+                    color = MaterialTheme.colorScheme.onSurface
+                )
 
                 Spacer(modifier = Modifier.height(4.dp))
 
@@ -68,14 +79,16 @@ fun HistoryItem(
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color(0xff505F6A),
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis)
+                    overflow = TextOverflow.Ellipsis
+                )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
                     text = dateTime,
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xff8C99A2))
+                    color = Color(0xff8C99A2)
+                )
             }
         }
     }
@@ -94,7 +107,8 @@ fun HistoryItemPreview() {
                     imageVector = vectorResource(HistoryItemsType.GEOLOCATION.image),
                     contentDescription = "Info"
                 )
-            }
+            },
+            onLongClick = {}
         )
     }
 }

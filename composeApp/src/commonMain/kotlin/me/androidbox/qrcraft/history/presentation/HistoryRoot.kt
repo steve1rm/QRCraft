@@ -27,11 +27,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import me.androidbox.qrcraft.features.scan_result.domain.QRContentType
-import me.androidbox.qrcraft.features.scan_result.domain.QRType
-import me.androidbox.qrcraft.features.scan_result.domain.toSvgResource
+import me.androidbox.qrcraft.core.presentation.utils.ObserveAsEvents
 import me.androidbox.qrcraft.history.presentation.components.HistoryItem
+import me.androidbox.qrcraft.history.presentation.components.HistoryItemBottomSheet
 import me.androidbox.qrcraft.history.presentation.model.HistoryTab
+import me.androidbox.qrcraft.rememberShareText
 import me.androidbox.ui.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -42,11 +42,34 @@ fun HistoryRoot(
     viewModel: HistoryViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val shareText = rememberShareText()
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is HistoryEvents.OnShareContent -> {
+                shareText(event.content)
+            }
+        }
+    }
 
     HistoryScreen(
         state = state,
         onAction = viewModel::onAction
     )
+
+    if (state.selectedItem != null) {
+        HistoryItemBottomSheet(
+            onDismiss = {
+                viewModel.onAction(HistoryAction.OnBottomSheetDismiss)
+            },
+            onShareClick = {
+                viewModel.onAction(HistoryAction.OnShareClick)
+            },
+            onDeleteClick = {
+                viewModel.onAction(HistoryAction.OnDeleteClick)
+            }
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -117,7 +140,10 @@ fun HistoryScreen(
                 .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(state.items) { item ->
+            items(
+                items =state.items,
+                key = { it.id }
+            ) { item ->
                 HistoryItem(
                     title = item.contentType,
                     details = item.content,
@@ -128,7 +154,11 @@ fun HistoryScreen(
                             contentDescription = null,
                             modifier = Modifier.size(32.dp),
                         )
-                    }
+                    },
+                    onLongClick = {
+                        onAction(HistoryAction.OnItemLongClick(item))
+                    },
+                    modifier = Modifier.animateItem()
                 )
             }
         }

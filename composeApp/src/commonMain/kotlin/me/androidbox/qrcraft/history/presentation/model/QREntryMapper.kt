@@ -14,8 +14,19 @@ fun QREntry.toQREntryUi(): QREntryUi {
         contentType = this.contentType,
         content = this.content,
         qrType = this.qrType,
+        createdAt = this.createdAt,
         createdAtFormatted = this.createdAt.toFormattedDate(),
         iconUrl = getIconUrlFromContentType(this.contentType)
+    )
+}
+
+fun QREntryUi.toQREntry(): QREntry {
+    return QREntry(
+        id = this.id,
+        contentType = this.contentType,
+        content = this.content,
+        qrType = this.qrType,
+        createdAt = this.createdAt
     )
 }
 

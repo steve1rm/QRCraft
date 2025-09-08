@@ -9,6 +9,7 @@ data class QREntryUi(
     val contentType: String,
     val content: String,
     val qrType: QRType = QRType.SCANNED,
+    val createdAt: Long,
     val createdAtFormatted: String,
     val iconUrl: String
 )

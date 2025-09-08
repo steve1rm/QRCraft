@@ -5,16 +5,19 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.androidbox.qrcraft.features.scan_result.domain.QREntryRepository
 import me.androidbox.qrcraft.history.presentation.model.HistoryTab
+import me.androidbox.qrcraft.history.presentation.model.toQREntry
 import me.androidbox.qrcraft.history.presentation.model.toQREntryUi
 
 class HistoryViewModel(
@@ -38,17 +41,47 @@ class HistoryViewModel(
             initialValue = HistoryState()
         )
     private var dataCollectionJob: Job? = null
+    private var deleteItemJob: Job? = null
+
+    private val _events = Channel<HistoryEvents>()
+    val events = _events.receiveAsFlow()
 
     fun onAction(action: HistoryAction) {
         when (action) {
             is HistoryAction.OnTabSelected -> {
                 _state.update {
-                    it.copy(
-                        selectedTab = action.tab,
-                    )
+                    it.copy(selectedTab = action.tab)
                 }
 
                 loadEntriesForTab(action.tab)
+            }
+
+            is HistoryAction.OnItemLongClick -> {
+                _state.update {
+                    it.copy(selectedItem = action.item)
+                }
+            }
+
+            HistoryAction.OnBottomSheetDismiss -> {
+                _state.update {
+                    it.copy(selectedItem = null)
+                }
+            }
+
+            HistoryAction.OnDeleteClick -> {
+                deleteItemJob?.cancel()
+
+                deleteItemJob = viewModelScope.launch {
+                    qrEntryRepository.deleteQREntry(_state.value.selectedItem?.toQREntry()!!)
+
+                    _state.update { it.copy(selectedItem = null) }
+                }
+            }
+
+            HistoryAction.OnShareClick -> {
+                viewModelScope.launch {
+                    _events.send(HistoryEvents.OnShareContent(_state.value.selectedItem!!.content))
+                }
             }
         }
     }
