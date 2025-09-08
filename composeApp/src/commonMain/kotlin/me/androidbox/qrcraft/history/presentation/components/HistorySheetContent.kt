@@ -17,6 +17,7 @@ import me.androidbox.ui.AppTheme
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import qrcraft.composeapp.generated.resources.Res
+import qrcraft.composeapp.generated.resources.ic_trash
 import qrcraft.composeapp.generated.resources.share
 
 @Composable
@@ -60,14 +61,16 @@ fun HistorySheetContent(
             ) {
                 Icon(
                     modifier = Modifier.size(16.dp),
-                    imageVector = vectorResource(Res.drawable.share),
-                    contentDescription = "Share"
+                    imageVector = vectorResource(Res.drawable.ic_trash),
+                    contentDescription = "Delete",
+                    tint = MaterialTheme.colorScheme.error
                 )
             }
 
             Text(
-                text = "Share",
-                style = MaterialTheme.typography.labelLarge
+                text = "Delete",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.error
             )
         }
     }
