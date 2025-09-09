@@ -40,6 +40,7 @@ import me.androidbox.qrcraft.features.scan_result.domain.QRContentType
 import me.androidbox.qrcraft.features.scan_result.domain.detectQRContentType
 import me.androidbox.qrcraft.features.scan_result.domain.extractQRContent
 import me.androidbox.qrcraft.features.scan_result.domain.toDisplayName
+import me.androidbox.qrcraft.features.scan_result.presentation.components.ActionBottomSheet
 import me.androidbox.ui.AppShapes
 import me.androidbox.ui.OnSurface
 import me.androidbox.ui.OnSurfaceAlt
@@ -89,7 +90,8 @@ fun ScanResultScreen(scannedQrCode: String) {
 
     val shareManager = rememberShareManager()
     val clipboard = LocalClipboardManager.current
-
+    
+    var showBottomSheet by remember { mutableStateOf(false) }
 
     val uriHandler = LocalUriHandler.current
 
@@ -164,53 +166,17 @@ uriHandler.openUri(uri = qrContent)
 
             Row(modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(all = 16.dp)) {
                 Button(
-                    onClick = { shareManager.shareText(text = qrContent) },
-                    modifier = Modifier.minimumInteractiveComponentSize().weight(1f)
-                        .padding(end = 8.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        contentColor = OnSurface,
-                        containerColor = Color.White
-                    )
-
-                ) {
-
-                    AsyncImage(
-                        model = Res.getUri("files/share.svg"),
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
-                    )
-                    Text(
-                        text = stringResource(Res.string.share),
-                        style = MaterialTheme.typography.labelLarge,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-                Button(
-                    onClick = {
-
-                        clipboard.setText(buildAnnotatedString { append(text = qrContent) })
-
-                    },
-                    modifier = Modifier.minimumInteractiveComponentSize().weight(1f),
+                    onClick = { showBottomSheet = true },
+                    modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
                         contentColor = OnSurface,
                         containerColor = Color.White
                     )
                 ) {
-
-
-                    AsyncImage(
-                        model = Res.getUri("files/copy.svg"),
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
-                    )
                     Text(
-                        text = stringResource(Res.string.copy),
-                        style = MaterialTheme.typography.labelLarge,
-                        modifier = Modifier.padding(start = 8.dp)
+                        text = "Actions",
+                        style = MaterialTheme.typography.labelLarge
                     )
-
-
                 }
             }
 
@@ -235,5 +201,17 @@ uriHandler.openUri(uri = qrContent)
         }
 
     }
+
+    // Action Bottom Sheet
+    ActionBottomSheet(
+        isVisible = showBottomSheet,
+        onDismiss = { showBottomSheet = false },
+        onShareClick = { shareManager.shareText(text = qrContent) },
+        onDeleteClick = {
+            // Handle delete action here
+            // For now, we'll just dismiss the sheet
+            // In a real app, this might delete the QR code from history or cache
+        }
+    )
 
 }
