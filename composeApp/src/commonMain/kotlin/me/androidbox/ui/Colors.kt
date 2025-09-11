@@ -23,6 +23,12 @@ val ColorScheme.bgGradient: Brush
         )
     )
 
+val ColorScheme.historyOverlay : Brush
+    get() = Brush.linearGradient(listOf(
+        Color(0xffEDF2F5).copy(alpha = .0f),
+        Color(0xffEDF2F5)
+    ))
+
 // Link
 val Link = Color(0xFF373F05)
 val LinkBG = Color(0x4DEBFF69) // 30% Primary

@@ -121,12 +121,13 @@ fun ScanResultScreen(scannedQrCode: String, qrEntryViewModel: QREntryViewModel) 
     }
 
 
+// TODO
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { source, event ->
 
             if (event == androidx.lifecycle.Lifecycle.Event.ON_STOP) {
                 qrEntryViewModel.addQREntry(
-                    contentType = currentQrContentType.ifEmpty {  qrContentType.name},
+                    contentType = currentQrContentType.ifEmpty {  qrContentType.name },
                     content = qrContent
                 )
             }

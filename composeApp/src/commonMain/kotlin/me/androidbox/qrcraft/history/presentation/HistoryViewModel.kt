@@ -30,7 +30,7 @@ class HistoryViewModel(
     val state = _state
         .onStart {
             if (!hasLoadedInitialData) {
-                loadEntriesForTab(HistoryTab.SCANNED)
+                loadEntriesForTab(_state.value.selectedTab)
 
                 hasLoadedInitialData = true
             }

@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,14 +25,20 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import kotlinx.coroutines.launch
 import me.androidbox.qrcraft.core.presentation.responsive.WindowSizeClass
 import me.androidbox.qrcraft.core.presentation.responsive.getDeviceType
 import me.androidbox.qrcraft.core.utils.rememberShareManager
+import me.androidbox.qrcraft.features.create_qr.choose_type.CreateQRScreenAction
+import me.androidbox.qrcraft.features.scan_result.domain.QRContentType
+import me.androidbox.qrcraft.features.scan_result.domain.toDisplayName
 import me.androidbox.qrcraft.features.scan_result.presentation.components.QRContentLayout
 import me.androidbox.ui.AppTheme
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 import qrcraft.composeapp.generated.resources.Res
 import qrcraft.composeapp.generated.resources.arrow_left
 
@@ -43,13 +50,34 @@ fun QRPreviewScreen(
     details: String,
     qrContent: String,
     isLink: Boolean,
-    isText: Boolean
+    isText: Boolean,
+    viewModel: CreatePreviewViewModel = koinViewModel()
 ) {
     val shareManager = rememberShareManager()
     val clipboard = LocalClipboardManager.current
     val coroutineScope = rememberCoroutineScope()
     val urlHandler = LocalUriHandler.current
     val deviceType = getDeviceType()
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { source, event ->
+
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_STOP) {
+                viewModel.addQREntry(
+                    content = qrContent,
+                    contentType = title,
+                )
+            }
+
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+
+        }
+    }
 
     Column(
         modifier = Modifier

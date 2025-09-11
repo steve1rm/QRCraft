@@ -4,7 +4,8 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import me.androidbox.qrcraft.features.scan_result.data.db.QREntry
 import me.androidbox.qrcraft.features.scan_result.domain.QRContentType
-import me.androidbox.qrcraft.features.scan_result.domain.toSvgResource
+import me.androidbox.qrcraft.features.scan_result.domain.toDrawableResource
+import org.jetbrains.compose.resources.DrawableResource
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -16,7 +17,7 @@ fun QREntry.toQREntryUi(): QREntryUi {
         qrType = this.qrType,
         createdAt = this.createdAt,
         createdAtFormatted = this.createdAt.toFormattedDate(),
-        iconUrl = getIconUrlFromContentType(this.contentType)
+        iconResource = getIconUrlFromContentType(this.contentType)
     )
 }
 
@@ -30,8 +31,8 @@ fun QREntryUi.toQREntry(): QREntry {
     )
 }
 
-private fun getIconUrlFromContentType(contentType: String): String {
-    return QRContentType.validEntries.find { it.name == contentType }?.toSvgResource() ?: ""
+private fun getIconUrlFromContentType(contentType: String): DrawableResource? {
+    return QRContentType.validEntries.find { it.name == contentType }?.toDrawableResource()
 }
 
 @OptIn(ExperimentalTime::class)
