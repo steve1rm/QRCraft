@@ -12,27 +12,31 @@ import kotlin.time.Instant
 fun QREntry.toQREntryUi(): QREntryUi {
     return QREntryUi(
         id = this.id,
+        title = this.title,
         contentType = this.contentType,
         content = this.content,
         qrType = this.qrType,
         createdAt = this.createdAt,
         createdAtFormatted = this.createdAt.toFormattedDate(),
         iconResource = getIconUrlFromContentType(this.contentType)
+
+
     )
 }
 
 fun QREntryUi.toQREntry(): QREntry {
     return QREntry(
         id = this.id,
-        contentType = this.contentType,
+        title = this.title,
         content = this.content,
+        contentType = this.contentType,
         qrType = this.qrType,
         createdAt = this.createdAt
     )
 }
 
-private fun getIconUrlFromContentType(contentType: String): DrawableResource? {
-    return QRContentType.validEntries.find { it.name == contentType }?.toDrawableResource()
+private fun getIconUrlFromContentType(contentType: QRContentType): DrawableResource? {
+    return contentType.toDrawableResource()
 }
 
 @OptIn(ExperimentalTime::class)

@@ -28,7 +28,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import me.androidbox.qrcraft.core.presentation.utils.ObserveAsEvents
-import me.androidbox.qrcraft.features.scan_result.domain.QRContentType
 import me.androidbox.qrcraft.features.scan_result.domain.toDisplayName
 import me.androidbox.qrcraft.features.scan_result.domain.toDrawableResource
 import me.androidbox.qrcraft.history.presentation.components.HistoryItem
@@ -41,6 +40,9 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
+
+//TODO PLEASE FIX The layout placement so the Scan History title does not go to the status bar
+//TODO PLEASE FIX LazyColumn goes under the systems bottom bar
 @Composable
 fun HistoryRoot(
     viewModel: HistoryViewModel = koinViewModel(),
@@ -61,6 +63,7 @@ fun HistoryRoot(
         onAction = viewModel::onAction
     )
 
+    //TODO  PLEASE FIX selectedItem stuck on the default item so sharing and deleting does not trigger
     if (state.selectedItem != null) {
         HistoryItemBottomSheet(
             onDismiss = {
@@ -138,7 +141,7 @@ fun HistoryScreen(
             }
 
             Spacer(Modifier.height(12.dp))
-// TODO
+
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -149,22 +152,18 @@ fun HistoryScreen(
                     items = state.items,
                     key = { it.id }
                 ) { item ->
+
                     HistoryItem(
-                        title = item.contentType,
+                        title = if (item.title.lowercase() != item.contentType.name.lowercase()) item.title else item.contentType.toDisplayName(),
                         details = item.content,
                         dateTime = item.createdAtFormatted,
                         icon = {
-                            val iconResource =
-                                QRContentType.validEntries.find { it.toDisplayName() == item.contentType }
-                                    ?.toDrawableResource()
+                            Image(
+                                painter = painterResource(item.contentType.toDrawableResource()),
+                                contentDescription = null,
+                                modifier = Modifier.size(32.dp),
+                            )
 
-                            iconResource?.let {
-                                Image(
-                                    painter = painterResource(iconResource),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(32.dp),
-                                )
-                            }
                         },
                         onLongClick = {
                             onAction(HistoryAction.OnItemLongClick(item))

@@ -65,6 +65,8 @@ fun App(
                 (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.CreateQRChooseType::class.qualifiedName) or
                 (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.History::class.qualifiedName)
 
+    val isCreateQRChooseTypeScreen = backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.CreateQRChooseType::class.qualifiedName
+
 
     val qrEntryViewModel: QREntryViewModel = koinViewModel()
 
@@ -108,10 +110,10 @@ fun App(
                 Box(
                     modifier = Modifier.fillMaxWidth().wrapContentHeight().navigationBarsPadding()
                         .then(
-                            if (isScanningScreen)
-                                Modifier.background(color = Color.Transparent)
-                            else
+                            if (isCreateQRChooseTypeScreen)
                                 Modifier.background(color = MaterialTheme.colorScheme.surface)
+                            else
+                                Modifier.background(color = Color.Transparent)
                         ), contentAlignment = Alignment.Center
                 ) {
 

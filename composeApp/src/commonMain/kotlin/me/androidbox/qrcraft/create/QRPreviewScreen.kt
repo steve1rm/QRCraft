@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -31,9 +30,7 @@ import kotlinx.coroutines.launch
 import me.androidbox.qrcraft.core.presentation.responsive.WindowSizeClass
 import me.androidbox.qrcraft.core.presentation.responsive.getDeviceType
 import me.androidbox.qrcraft.core.utils.rememberShareManager
-import me.androidbox.qrcraft.features.create_qr.choose_type.CreateQRScreenAction
 import me.androidbox.qrcraft.features.scan_result.domain.QRContentType
-import me.androidbox.qrcraft.features.scan_result.domain.toDisplayName
 import me.androidbox.qrcraft.features.scan_result.presentation.components.QRContentLayout
 import me.androidbox.ui.AppTheme
 import org.jetbrains.compose.resources.vectorResource
@@ -47,6 +44,7 @@ fun QRPreviewScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     title: String,
+    contentType: QRContentType,
     details: String,
     qrContent: String,
     isLink: Boolean,
@@ -66,8 +64,9 @@ fun QRPreviewScreen(
 
             if (event == androidx.lifecycle.Lifecycle.Event.ON_STOP) {
                 viewModel.addQREntry(
-                    content = qrContent,
-                    contentType = title,
+                    title = title,
+                    contentType = contentType,
+                    content = qrContent
                 )
             }
 
@@ -150,7 +149,8 @@ fun QRPreviewScreen(
 fun QRPreviewScreenPreview() {
     AppTheme {
         QRPreviewScreen(
-            title = "QR Code Result",
+            title = "Wifi Test",
+            contentType = QRContentType.UNDEFINED,
             details = "In the grand tapestry of existence, where threads of chance and choice intertwine, the relentless march of time ushers forth an ever-changing landscape of opportunities and challenges. Consider the humble artisan, meticulously shaping raw materials into objects of beauty and utility. Their dedication, a silent testament to the enduring power of human creativity, echoes through generations. Each hammer fall, each brushstroke, each carefully considered detail contributes to a legacy far greater than the sum of its parts. It is this persistent pursuit of excellence, this unwavering commitment to craft, that often distinguishes the remarkable from the mundane.",
             qrContent = "",
             onBackClick = {},

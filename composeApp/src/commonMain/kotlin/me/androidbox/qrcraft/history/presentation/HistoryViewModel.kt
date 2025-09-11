@@ -2,6 +2,7 @@ package me.androidbox.qrcraft.history.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.touchlab.kermit.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
@@ -46,6 +47,7 @@ class HistoryViewModel(
     private val _events = Channel<HistoryEvents>()
     val events = _events.receiveAsFlow()
 
+    //TODO Launch preview ACTION is missing so after clicking the selected item the preview screen is not loaded
     fun onAction(action: HistoryAction) {
         when (action) {
             is HistoryAction.OnTabSelected -> {
@@ -101,6 +103,10 @@ class HistoryViewModel(
                 }
                 .flowOn(Dispatchers.IO)
                 .collect { items ->
+                    items.forEach {
+                        Logger.e("items $it")
+                    }
+
                     _state.update {
                         it.copy(
                             items = items
