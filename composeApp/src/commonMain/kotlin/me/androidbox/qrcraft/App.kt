@@ -44,23 +44,31 @@ import qrcraft.composeapp.generated.resources.scan_result
 @Composable
 @Preview
 fun App(
-    prefDataStore: PrefDataStore
+    prefDataStore: PrefDataStore,
 ) {
 
     val navController = rememberNavController()
     val backStackEntry = navController.currentBackStackEntryAsState()
 
-    val isScanResult = backStackEntry.value?.destination?.route?.startsWith(QrCraftNavGraph.QrCraftNavigation.ScanResult::class.qualifiedName!!) == true
+    val isScanResult =
+        backStackEntry.value?.destination?.route?.startsWith(QrCraftNavGraph.QrCraftNavigation.ScanResult::class.qualifiedName!!) == true
 
-    val isScanningScreen = backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.Scan::class.qualifiedName
-    val isCreateQRChooseTypeScreenLoaded = backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.CreateQRChooseType::class.qualifiedName
+    val isScanningScreen =
+        backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.Scan::class.qualifiedName
+    val isHistoryScreen =
+        backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.History::class.qualifiedName
+    val isCreateQRChooseTypeScreenLoaded =
+        backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.CreateQRChooseType::class.qualifiedName
 
-    val isBottomBarVisible = (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.Scan::class.qualifiedName) or
-            (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.CreateQRChooseType::class.qualifiedName) or
-            (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.History::class.qualifiedName)
+    val isBottomBarVisible =
+        (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.Scan::class.qualifiedName) or
+                (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.CreateQRChooseType::class.qualifiedName) or
+                (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.History::class.qualifiedName)
+
+    val isCreateQRChooseTypeScreen = backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.CreateQRChooseType::class.qualifiedName
 
 
-    val qrEntryViewModel : QREntryViewModel = koinViewModel()
+    val qrEntryViewModel: QREntryViewModel = koinViewModel()
 
     LaunchedEffect(backStackEntry, isScanResult) {
         Logger.e("currentRoute $backStackEntry isScanResult $isScanResult")
@@ -102,10 +110,10 @@ fun App(
                 Box(
                     modifier = Modifier.fillMaxWidth().wrapContentHeight().navigationBarsPadding()
                         .then(
-                            if (isScanningScreen)
-                                Modifier.background(color = Color.Transparent)
-                            else
+                            if (isCreateQRChooseTypeScreen)
                                 Modifier.background(color = MaterialTheme.colorScheme.surface)
+                            else
+                                Modifier.background(color = Color.Transparent)
                         ), contentAlignment = Alignment.Center
                 ) {
 
@@ -137,7 +145,7 @@ fun App(
                 navController = navController,
                 prefDataStore = prefDataStore,
                 qrEntryViewModel = qrEntryViewModel,
-                modifier = if(!isScanningScreen) parentModifier else Modifier
+                modifier = if (!isScanningScreen && !isHistoryScreen) parentModifier else Modifier
             )
         }
     }

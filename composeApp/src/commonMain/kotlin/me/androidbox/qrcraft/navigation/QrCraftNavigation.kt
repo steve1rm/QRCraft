@@ -110,10 +110,10 @@ fun NavGraphBuilder.qrCraftNavigation(
                 scannedQRCode = qrContentRoute.scannedQrCode,
                 qrContentType = qrContentType
             )
-            val text = qrContentType.toDisplayName()
 
             QRPreviewScreen(
-                title = text,
+                title = qrContentType.toDisplayName(),
+                contentType = qrContentType,
                 details = qrContent,
                 qrContent = qrContentRoute.scannedQrCode,
                 isLink = qrContentType == QRContentType.LINK,

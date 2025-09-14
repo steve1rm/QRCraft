@@ -4,13 +4,14 @@ import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import me.androidbox.qrcraft.features.scan_result.data.db.QRContentTypeConverter
 import me.androidbox.qrcraft.features.scan_result.data.db.QREntry
 import me.androidbox.qrcraft.features.scan_result.data.db.QREntryDao
 import me.androidbox.qrcraft.features.scan_result.data.db.QRTypeConverter
 
-@Database(entities = [QREntry::class], version = 7)
+@Database(entities = [QREntry::class], version = 9)
 @ConstructedBy(AppDatabaseConstructor::class)
-@TypeConverters(QRTypeConverter::class)
+@TypeConverters(QRTypeConverter::class, QRContentTypeConverter::class)
 abstract class AppDatabase: RoomDatabase() {
 
     abstract val qrEntryDao: QREntryDao

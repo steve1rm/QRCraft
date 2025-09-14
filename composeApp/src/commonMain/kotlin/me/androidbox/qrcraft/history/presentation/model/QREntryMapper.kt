@@ -4,34 +4,39 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import me.androidbox.qrcraft.features.scan_result.data.db.QREntry
 import me.androidbox.qrcraft.features.scan_result.domain.QRContentType
-import me.androidbox.qrcraft.features.scan_result.domain.toSvgResource
+import me.androidbox.qrcraft.features.scan_result.domain.toDrawableResource
+import org.jetbrains.compose.resources.DrawableResource
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 fun QREntry.toQREntryUi(): QREntryUi {
     return QREntryUi(
         id = this.id,
+        title = this.title,
         contentType = this.contentType,
         content = this.content,
         qrType = this.qrType,
         createdAt = this.createdAt,
         createdAtFormatted = this.createdAt.toFormattedDate(),
-        iconUrl = getIconUrlFromContentType(this.contentType)
+        iconResource = getIconUrlFromContentType(this.contentType)
+
+
     )
 }
 
 fun QREntryUi.toQREntry(): QREntry {
     return QREntry(
         id = this.id,
-        contentType = this.contentType,
+        title = this.title,
         content = this.content,
+        contentType = this.contentType,
         qrType = this.qrType,
         createdAt = this.createdAt
     )
 }
 
-private fun getIconUrlFromContentType(contentType: String): String {
-    return QRContentType.validEntries.find { it.name == contentType }?.toSvgResource() ?: ""
+private fun getIconUrlFromContentType(contentType: QRContentType): DrawableResource? {
+    return contentType.toDrawableResource()
 }
 
 @OptIn(ExperimentalTime::class)
