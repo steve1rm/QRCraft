@@ -1,6 +1,5 @@
 package me.androidbox.qrcraft.navigation
 
-import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -37,14 +36,11 @@ fun NavGraphBuilder.qrCraftNavigation(
         composable<QrCraftNavigation.Scan> {
 
             val factory = rememberPermissionsControllerFactory()
-            val permissionController = remember(factory) {
-                factory.createPermissionsController()
-            }
 
-            BindEffect(permissionController)
             val permissionsViewModel = viewModel(initializer = {
-                PermissionsViewModel(permissionController)
+                PermissionsViewModel(factory.createPermissionsController())
             })
+            BindEffect(permissionsViewModel.permissionsController)
 
             ScanningScreen(
                 onCloseClicked = {
