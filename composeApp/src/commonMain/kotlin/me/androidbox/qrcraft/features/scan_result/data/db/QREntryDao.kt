@@ -2,17 +2,16 @@ package me.androidbox.qrcraft.features.scan_result.data.db
 
 import androidx.room.Dao
 import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 import me.androidbox.qrcraft.features.scan_result.domain.QRType
 
 @Dao
 interface QREntryDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(entry: QREntry)
+    @Upsert
+    suspend fun upsert(entry: QREntry)
 
     @Query("SELECT * FROM qrentry")
     fun getAllEntries(): Flow<List<QREntry>>

@@ -24,7 +24,7 @@ val ColorScheme.bgGradient: Brush
     )
 
 val ColorScheme.historyOverlay : Brush
-    get() = Brush.linearGradient(listOf(
+    get() = Brush.verticalGradient(listOf(
         Color(0xffEDF2F5).copy(alpha = .0f),
         Color(0xffEDF2F5)
     ))

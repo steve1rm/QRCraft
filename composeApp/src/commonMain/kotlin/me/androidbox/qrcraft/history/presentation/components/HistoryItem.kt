@@ -32,6 +32,7 @@ fun HistoryItem(
     details: String,
     dateTime: String,
     modifier: Modifier = Modifier,
+    onItemClick: () -> Unit,
     onLongClick: () -> Unit,
     icon: @Composable () -> Unit,
 ) {
@@ -39,6 +40,9 @@ fun HistoryItem(
         modifier = modifier
             .pointerInput(Unit) {
                 detectTapGestures(
+                    onTap = {
+                        onItemClick()
+                    },
                     onLongPress = {
                         onLongClick()
                     }
@@ -108,7 +112,8 @@ fun HistoryItemPreview() {
                     contentDescription = "Info"
                 )
             },
-            onLongClick = {}
+            onLongClick = {},
+            onItemClick = {}
         )
     }
 }

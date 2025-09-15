@@ -51,6 +51,7 @@ import coil3.compose.AsyncImage
 import me.androidbox.qrcraft.core.data.MAX_CHARACTER_LENGTH
 import me.androidbox.qrcraft.core.utils.rememberShareManager
 import me.androidbox.qrcraft.features.scan_result.domain.QRContentType
+import me.androidbox.qrcraft.features.scan_result.domain.QRType
 import me.androidbox.qrcraft.features.scan_result.domain.detectQRContentType
 import me.androidbox.qrcraft.features.scan_result.domain.extractQRContent
 import me.androidbox.qrcraft.features.scan_result.domain.toDisplayName
@@ -72,7 +73,13 @@ import qrgenerator.QRCodeImage
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ScanResultScreen(scannedQrCode: String, qrEntryViewModel: QREntryViewModel) {
+fun ScanResultScreen(
+    id: Int = 0,
+    scannedQrCode: String,
+    qrEntryViewModel: QREntryViewModel,
+    title: String? = null,
+    qrType: QRType = QRType.SCANNED,
+) {
     Logger.e("scannedCode $scannedQrCode")
 
     val shareManager = rememberShareManager()
@@ -117,7 +124,7 @@ fun ScanResultScreen(scannedQrCode: String, qrEntryViewModel: QREntryViewModel) 
 
 
     var currentQrContentType by remember {
-        mutableStateOf("")
+        mutableStateOf(title ?: "")
     }
 
 
@@ -127,9 +134,11 @@ fun ScanResultScreen(scannedQrCode: String, qrEntryViewModel: QREntryViewModel) 
 
             if (event == androidx.lifecycle.Lifecycle.Event.ON_STOP) {
                 qrEntryViewModel.addQREntry(
+                    id = id,
                     title = currentQrContentType.ifEmpty { qrContentType.name },
                     contentType = qrContentType,
-                    content = qrContent
+                    content = qrContent,
+                    qrType = qrType
                 )
             }
 
@@ -173,7 +182,7 @@ fun ScanResultScreen(scannedQrCode: String, qrEntryViewModel: QREntryViewModel) 
                 value = currentQrContentType,
                 onValueChange = { changedValue ->
                     if (changedValue.length <= MAX_CHARACTER_LENGTH)
-                    currentQrContentType = changedValue
+                        currentQrContentType = changedValue
                 },
                 textStyle = MaterialTheme.typography.titleMedium.copy(
                     textAlign = TextAlign.Center
@@ -207,10 +216,10 @@ fun ScanResultScreen(scannedQrCode: String, qrEntryViewModel: QREntryViewModel) 
                 keyboardActions = KeyboardActions(
                     onDone = {
                         focusManager.clearFocus()
-                 /*       qrEntryViewModel.addQREntry(
-                            contentType = currentQrContentType.ifEmpty { qrContentType.name },
-                            content = qrContent
-                        )*/
+                        /*       qrEntryViewModel.addQREntry(
+                                   contentType = currentQrContentType.ifEmpty { qrContentType.name },
+                                   content = qrContent
+                               )*/
                     },
                 ),
                 keyboardOptions = KeyboardOptions(

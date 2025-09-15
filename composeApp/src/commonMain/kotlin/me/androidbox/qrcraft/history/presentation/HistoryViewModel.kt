@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.androidbox.qrcraft.features.scan_result.domain.QREntryRepository
+import me.androidbox.qrcraft.history.presentation.HistoryEvents.*
 import me.androidbox.qrcraft.history.presentation.model.HistoryTab
 import me.androidbox.qrcraft.history.presentation.model.toQREntry
 import me.androidbox.qrcraft.history.presentation.model.toQREntryUi
@@ -82,7 +83,13 @@ class HistoryViewModel(
 
             HistoryAction.OnShareClick -> {
                 viewModelScope.launch {
-                    _events.send(HistoryEvents.OnShareContent(_state.value.selectedItem!!.content))
+                    _events.send(OnShareContent(_state.value.selectedItem!!.content))
+                }
+            }
+
+            is HistoryAction.OnItemClick -> {
+                viewModelScope.launch {
+                    _events.send(OnItemClick(action.item))
                 }
             }
         }

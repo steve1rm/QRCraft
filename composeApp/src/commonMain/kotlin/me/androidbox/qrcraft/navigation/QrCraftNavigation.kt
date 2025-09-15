@@ -28,7 +28,7 @@ import org.koin.core.parameter.parametersOf
 fun NavGraphBuilder.qrCraftNavigation(
     navHostController: NavHostController,
     prefDataStore: PrefDataStore,
-    qrEntryViewModel: QREntryViewModel
+    qrEntryViewModel: QREntryViewModel,
 ) {
     this.navigation<QrCraftNavigation>(
         startDestination = QrCraftNavigation.Scan
@@ -60,12 +60,29 @@ fun NavGraphBuilder.qrCraftNavigation(
         }
 
         composable<QrCraftNavigation.History> {
-            HistoryRoot()
+            HistoryRoot(
+                onNavigateToScanResult = { id, scanned, title, qrType ->
+                    navHostController.navigate(
+                        QrCraftNavigation.ScanResult(
+                            id = id,
+                            scannedQrCode = scanned,
+                            title = title,
+                            qrType = qrType
+                        )
+                    )
+                }
+            )
         }
 
         composable<QrCraftNavigation.ScanResult> {
             val scanResultsRoute = it.toRoute<QrCraftNavigation.ScanResult>()
-            ScanResultScreen(scannedQrCode = scanResultsRoute.scannedQrCode, qrEntryViewModel = qrEntryViewModel)
+            ScanResultScreen(
+                id = scanResultsRoute.id,
+                scannedQrCode = scanResultsRoute.scannedQrCode,
+                qrEntryViewModel = qrEntryViewModel,
+                title = scanResultsRoute.title.toDisplayName(),
+                qrType = scanResultsRoute.qrType,
+            )
         }
 
         composable<QrCraftNavigation.CreateQRChooseType> {

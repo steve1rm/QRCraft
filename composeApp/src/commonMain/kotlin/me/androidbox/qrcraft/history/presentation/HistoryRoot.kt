@@ -28,6 +28,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import me.androidbox.qrcraft.core.presentation.utils.ObserveAsEvents
+import me.androidbox.qrcraft.features.scan_result.domain.QRContentType
+import me.androidbox.qrcraft.features.scan_result.domain.QRType
 import me.androidbox.qrcraft.features.scan_result.domain.toDisplayName
 import me.androidbox.qrcraft.features.scan_result.domain.toDrawableResource
 import me.androidbox.qrcraft.history.presentation.components.HistoryItem
@@ -45,6 +47,9 @@ import org.koin.compose.viewmodel.koinViewModel
 //TODO PLEASE FIX LazyColumn goes under the systems bottom bar
 @Composable
 fun HistoryRoot(
+    onNavigateToScanResult: (
+        id: Int, qrContent: String, title: QRContentType, qrType: QRType,
+    ) -> Unit,
     viewModel: HistoryViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -54,6 +59,15 @@ fun HistoryRoot(
         when (event) {
             is HistoryEvents.OnShareContent -> {
                 shareText(event.content)
+            }
+
+            is HistoryEvents.OnItemClick -> {
+                onNavigateToScanResult(
+                    event.qrEntryUi.id,
+                    event.qrEntryUi.content,
+                    event.qrEntryUi.contentType,
+                    event.qrEntryUi.qrType
+                )
             }
         }
     }
@@ -164,6 +178,9 @@ fun HistoryScreen(
                                 modifier = Modifier.size(32.dp),
                             )
 
+                        },
+                        onItemClick = {
+                            onAction(HistoryAction.OnItemClick(item))
                         },
                         onLongClick = {
                             onAction(HistoryAction.OnItemLongClick(item))
