@@ -48,7 +48,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun HistoryRoot(
     onNavigateToScanResult: (
-        id: Int, qrContent: String, title: QRContentType, qrType: QRType,
+        id: Int, qrContent: String, title: String, qrType: QRType,
     ) -> Unit,
     viewModel: HistoryViewModel = koinViewModel(),
 ) {
@@ -65,7 +65,7 @@ fun HistoryRoot(
                 onNavigateToScanResult(
                     event.qrEntryUi.id,
                     event.qrEntryUi.content,
-                    event.qrEntryUi.contentType,
+                    event.qrEntryUi.title,
                     event.qrEntryUi.qrType
                 )
             }

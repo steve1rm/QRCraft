@@ -19,7 +19,7 @@ sealed interface QrCraftNavGraph {
         data class ScanResult(
             val scannedQrCode: String,
             val id: Int = 0,
-            val title: QRContentType = QRContentType.TEXT,
+            val title: String? = null,
             val qrType: QRType = QRType.SCANNED,
         ) : QrCraftNavGraph
 

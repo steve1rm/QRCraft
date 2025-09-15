@@ -92,6 +92,7 @@ fun ScanResultScreen(
     var qrContentType by remember {
         mutableStateOf(QRContentType.UNDEFINED)
     }
+    val qrContentTypeDisplayable = qrContentType.toDisplayName()
 
     LaunchedEffect(scannedQrCode) {
         qrContentType = detectQRContentType(scannedQrCode = scannedQrCode)
@@ -135,7 +136,7 @@ fun ScanResultScreen(
             if (event == androidx.lifecycle.Lifecycle.Event.ON_STOP) {
                 qrEntryViewModel.addQREntry(
                     id = id,
-                    title = currentQrContentType.ifEmpty { qrContentType.name },
+                    title = currentQrContentType.ifEmpty { qrContentTypeDisplayable },
                     contentType = qrContentType,
                     content = qrContent,
                     qrType = qrType

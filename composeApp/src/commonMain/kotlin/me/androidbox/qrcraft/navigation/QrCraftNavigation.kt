@@ -80,7 +80,7 @@ fun NavGraphBuilder.qrCraftNavigation(
                 id = scanResultsRoute.id,
                 scannedQrCode = scanResultsRoute.scannedQrCode,
                 qrEntryViewModel = qrEntryViewModel,
-                title = scanResultsRoute.title.toDisplayName(),
+                title = scanResultsRoute.title,
                 qrType = scanResultsRoute.qrType,
             )
         }
