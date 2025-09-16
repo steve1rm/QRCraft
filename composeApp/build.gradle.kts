@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 
 }
 
@@ -27,6 +29,10 @@ kotlin {
             baseName = "ComposeApp"
             isStatic = true
         }
+    }
+
+    room{
+        schemaDirectory("${projectDir}/schemas")
     }
     
     sourceSets {
@@ -69,9 +75,17 @@ kotlin {
             implementation(libs.qr.kit)
             implementation(libs.datastore)
             implementation(libs.datastore.preferences)
+            implementation(libs.lifecycle)
+            implementation(libs.room.runtime)
+            implementation(libs.sqlite.bundled)
+            implementation(libs.kotlinx.datetime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+        }
+
+        dependencies {
+            ksp(libs.room.compiler)
         }
     }
 }

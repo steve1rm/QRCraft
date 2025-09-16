@@ -13,6 +13,7 @@ val OnSurfaceAlt = Color(0xFF505F6A)
 val Overlay = Color(0x80000000) // 50% Black
 val OnOverlay = Color(0xFFFFFFFF)
 val OnSurfaceDisabled = Color(0xFF8C99A2)
+val Outline = Color(0xffCCD5DC)
 
 val ColorScheme.bgGradient: Brush
     get() = Brush.linearGradient(
@@ -21,6 +22,12 @@ val ColorScheme.bgGradient: Brush
             Color(0xff5A4CF7)
         )
     )
+
+val ColorScheme.historyOverlay : Brush
+    get() = Brush.verticalGradient(listOf(
+        Color(0xffEDF2F5).copy(alpha = .0f),
+        Color(0xffEDF2F5)
+    ))
 
 // Link
 val Link = Color(0xFF373F05)
@@ -49,3 +56,5 @@ val PhoneBG = Color(0x1AC86017) // 10%
 // WiFi
 val WiFi = Color(0xFF1F44CD)
 val WiFiBG = Color(0x1A1F44CD) // 10%
+
+val GrayTxtFldHint = Color(0xFFC5CBCF)
