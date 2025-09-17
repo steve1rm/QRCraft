@@ -10,3 +10,11 @@ expect fun getPlatform(): Platform
 
 @Composable
 expect fun rememberShareText(): (String) -> Unit
+
+expect class ImagePicker() {
+    @Composable
+    fun pickImage(onImageSelected: (String?) -> Unit)
+    fun launch()
+}
+
+expect suspend fun scanQRFromImage(imageUri: String?): String?
