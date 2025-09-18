@@ -16,6 +16,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,6 +33,7 @@ import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import qrcraft.composeapp.generated.resources.Res
 import qrcraft.composeapp.generated.resources.copy
+import qrcraft.composeapp.generated.resources.download
 import qrcraft.composeapp.generated.resources.share
 import qrgenerator.QRCodeImage
 
@@ -118,10 +121,10 @@ fun QRContentLayout(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
             ) {
-                Button(
-                    modifier = Modifier.weight(1f),
+                IconButton(
+                    modifier = Modifier.size(44.dp),
                     onClick = onShareClicked,
-                    colors = ButtonDefaults.buttonColors(
+                    colors = IconButtonDefaults.iconButtonColors(
                         containerColor = MaterialTheme.colorScheme.background
                     )
                 ) {
@@ -130,15 +133,12 @@ fun QRContentLayout(
                         contentDescription = "Share",
                         tint = MaterialTheme.colorScheme.onSurface
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Share",
-                        color = MaterialTheme.colorScheme.onSurface)
                 }
 
-                Button(
-                    modifier = Modifier.weight(1f),
+                IconButton(
+                    modifier = Modifier.size(44.dp),
                     onClick = onCopyClicked,
-                    colors = ButtonDefaults.buttonColors(
+                    colors = IconButtonDefaults.iconButtonColors(
                         containerColor = MaterialTheme.colorScheme.background
                     )
                 ) {
@@ -147,11 +147,25 @@ fun QRContentLayout(
                         contentDescription = "Copy",
                         tint = MaterialTheme.colorScheme.onSurface
                     )
+                }
+
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = onShareClicked,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.background
+                    )
+                ) {
+                    Icon(
+                        imageVector = vectorResource(Res.drawable.download),
+                        contentDescription = "Save",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        "Copy",
+                    Text("Save",
                         color = MaterialTheme.colorScheme.onSurface)
                 }
+
             }
         }
 
