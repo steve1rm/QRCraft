@@ -63,11 +63,10 @@ fun NavGraphBuilder.qrCraftNavigation(
             HistoryRoot(
                 onNavigateToScanResult = { id, scanned, title, qrType ->
                     navHostController.navigate(
-                        QrCraftNavigation.ScanResult(
-                            id = id,
+                        route = QrCraftNavigation.QrPreview(
                             scannedQrCode = scanned,
                             title = title,
-                            qrType = qrType
+                            details = ""
                         )
                     )
                 }
