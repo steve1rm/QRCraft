@@ -1,6 +1,5 @@
 package me.androidbox.qrcraft.navigation
 
-import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -16,7 +15,9 @@ import me.androidbox.qrcraft.features.scan_result.domain.QRContentType
 import me.androidbox.qrcraft.features.scan_result.domain.detectQRContentType
 import me.androidbox.qrcraft.features.scan_result.domain.extractQRContent
 import me.androidbox.qrcraft.features.scan_result.domain.toDisplayName
+import me.androidbox.qrcraft.features.scan_result.presentation.QREntryViewModel
 import me.androidbox.qrcraft.features.scan_result.presentation.ScanResultScreen
+import me.androidbox.qrcraft.history.presentation.HistoryRoot
 import me.androidbox.qrcraft.navigation.QrCraftNavGraph.QrCraftNavigation
 import me.androidbox.qrcraft.permissions.PermissionsViewModel
 import me.androidbox.qrcraft.scanning.presentation.PrefDataStore
@@ -26,21 +27,20 @@ import org.koin.core.parameter.parametersOf
 
 fun NavGraphBuilder.qrCraftNavigation(
     navHostController: NavHostController,
-    prefDataStore: PrefDataStore) {
+    prefDataStore: PrefDataStore,
+    qrEntryViewModel: QREntryViewModel,
+) {
     this.navigation<QrCraftNavigation>(
         startDestination = QrCraftNavigation.Scan
     ) {
         composable<QrCraftNavigation.Scan> {
 
             val factory = rememberPermissionsControllerFactory()
-            val permissionController = remember(factory) {
-                factory.createPermissionsController()
-            }
 
-            BindEffect(permissionController)
             val permissionsViewModel = viewModel(initializer = {
-                PermissionsViewModel(permissionController)
+                PermissionsViewModel(factory.createPermissionsController())
             })
+            BindEffect(permissionsViewModel.permissionsController)
 
             ScanningScreen(
                 onCloseClicked = {
@@ -59,9 +59,29 @@ fun NavGraphBuilder.qrCraftNavigation(
             )
         }
 
+        composable<QrCraftNavigation.History> {
+            HistoryRoot(
+                onNavigateToScanResult = { id, scanned, title, qrType ->
+                    navHostController.navigate(
+                        route = QrCraftNavigation.QrPreview(
+                            scannedQrCode = scanned,
+                            title = title,
+                            details = ""
+                        )
+                    )
+                }
+            )
+        }
+
         composable<QrCraftNavigation.ScanResult> {
             val scanResultsRoute = it.toRoute<QrCraftNavigation.ScanResult>()
-            ScanResultScreen(scannedQrCode = scanResultsRoute.scannedQrCode)
+            ScanResultScreen(
+                id = scanResultsRoute.id,
+                scannedQrCode = scanResultsRoute.scannedQrCode,
+                qrEntryViewModel = qrEntryViewModel,
+                title = scanResultsRoute.title,
+                qrType = scanResultsRoute.qrType,
+            )
         }
 
         composable<QrCraftNavigation.CreateQRChooseType> {
@@ -79,11 +99,13 @@ fun NavGraphBuilder.qrCraftNavigation(
                     navHostController.navigateUp()
                 },
                 onNavigateToResult = { result ->
-                    navHostController.navigate(QrCraftNavigation.QrPreview(
-                        scannedQrCode = result,
-                        title = "Title",
-                        details = "Details"
-                    ))
+                    navHostController.navigate(
+                        QrCraftNavigation.QrPreview(
+                            scannedQrCode = result,
+                            title = "Title",
+                            details = "Details"
+                        )
+                    )
 
                 },
                 viewModel = koinViewModel(
@@ -100,11 +122,14 @@ fun NavGraphBuilder.qrCraftNavigation(
             val qrContentRoute = it.toRoute<QrCraftNavigation.QrPreview>()
 
             val qrContentType = detectQRContentType(scannedQrCode = qrContentRoute.scannedQrCode)
-            val qrContent = extractQRContent(scannedQRCode = qrContentRoute.scannedQrCode, qrContentType = qrContentType)
-            val text = qrContentType.toDisplayName()
+            val qrContent = extractQRContent(
+                scannedQRCode = qrContentRoute.scannedQrCode,
+                qrContentType = qrContentType
+            )
 
             QRPreviewScreen(
-                title = text,
+                title = qrContentType.toDisplayName(),
+                contentType = qrContentType,
                 details = qrContent,
                 qrContent = qrContentRoute.scannedQrCode,
                 isLink = qrContentType == QRContentType.LINK,

@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -17,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,14 +24,18 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import kotlinx.coroutines.launch
 import me.androidbox.qrcraft.core.presentation.responsive.WindowSizeClass
 import me.androidbox.qrcraft.core.presentation.responsive.getDeviceType
 import me.androidbox.qrcraft.core.utils.rememberShareManager
+import me.androidbox.qrcraft.features.scan_result.domain.QRContentType
 import me.androidbox.qrcraft.features.scan_result.presentation.components.QRContentLayout
 import me.androidbox.ui.AppTheme
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 import qrcraft.composeapp.generated.resources.Res
 import qrcraft.composeapp.generated.resources.arrow_left
 
@@ -40,16 +44,39 @@ fun QRPreviewScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     title: String,
+    contentType: QRContentType,
     details: String,
     qrContent: String,
     isLink: Boolean,
-    isText: Boolean
+    isText: Boolean,
+    viewModel: CreatePreviewViewModel = koinViewModel()
 ) {
     val shareManager = rememberShareManager()
     val clipboard = LocalClipboardManager.current
     val coroutineScope = rememberCoroutineScope()
     val urlHandler = LocalUriHandler.current
     val deviceType = getDeviceType()
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { source, event ->
+
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_STOP) {
+                viewModel.addQREntry(
+                    title = title,
+                    contentType = contentType,
+                    content = qrContent
+                )
+            }
+
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -122,7 +149,8 @@ fun QRPreviewScreen(
 fun QRPreviewScreenPreview() {
     AppTheme {
         QRPreviewScreen(
-            title = "QR Code Result",
+            title = "Wifi Test",
+            contentType = QRContentType.UNDEFINED,
             details = "In the grand tapestry of existence, where threads of chance and choice intertwine, the relentless march of time ushers forth an ever-changing landscape of opportunities and challenges. Consider the humble artisan, meticulously shaping raw materials into objects of beauty and utility. Their dedication, a silent testament to the enduring power of human creativity, echoes through generations. Each hammer fall, each brushstroke, each carefully considered detail contributes to a legacy far greater than the sum of its parts. It is this persistent pursuit of excellence, this unwavering commitment to craft, that often distinguishes the remarkable from the mundane.",
             qrContent = "",
             onBackClick = {},
