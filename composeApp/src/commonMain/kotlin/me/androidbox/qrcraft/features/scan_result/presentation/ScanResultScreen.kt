@@ -51,6 +51,7 @@ import qrcraft.composeapp.generated.resources.copy
 import qrcraft.composeapp.generated.resources.share
 import qrcraft.composeapp.generated.resources.show_less
 import qrcraft.composeapp.generated.resources.show_more
+import me.androidbox.qrcraft.features.scan_result.presentation.components.ButtonSheet
 import qrgenerator.QRCodeImage
 
 
@@ -86,6 +87,7 @@ fun ScanResultScreen(scannedQrCode: String) {
     }
 
     var isMaxLinesExceeded by remember { mutableStateOf(false) }
+    var isButtonSheetVisible by remember { mutableStateOf(false) }
 
     val shareManager = rememberShareManager()
     val clipboard = LocalClipboardManager.current
@@ -162,56 +164,21 @@ uriHandler.openUri(uri = qrContent)
             }
 
 
-            Row(modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(all = 16.dp)) {
-                Button(
-                    onClick = { shareManager.shareText(text = qrContent) },
-                    modifier = Modifier.minimumInteractiveComponentSize().weight(1f)
-                        .padding(end = 8.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        contentColor = OnSurface,
-                        containerColor = Color.White
-                    )
-
-                ) {
-
-                    AsyncImage(
-                        model = Res.getUri("files/share.svg"),
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
-                    )
-                    Text(
-                        text = stringResource(Res.string.share),
-                        style = MaterialTheme.typography.labelLarge,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-                Button(
-                    onClick = {
-
-                        clipboard.setText(buildAnnotatedString { append(text = qrContent) })
-
-                    },
-                    modifier = Modifier.minimumInteractiveComponentSize().weight(1f),
-                    colors = ButtonDefaults.buttonColors(
-                        contentColor = OnSurface,
-                        containerColor = Color.White
-                    )
-                ) {
-
-
-                    AsyncImage(
-                        model = Res.getUri("files/copy.svg"),
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
-                    )
-                    Text(
-                        text = stringResource(Res.string.copy),
-                        style = MaterialTheme.typography.labelLarge,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-
-
-                }
+            // Single button to open action sheet
+            Button(
+                onClick = { isButtonSheetVisible = true },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = OnSurface,
+                    containerColor = Color.White
+                )
+            ) {
+                Text(
+                    text = "Actions",
+                    style = MaterialTheme.typography.labelLarge
+                )
             }
 
 
@@ -235,5 +202,18 @@ uriHandler.openUri(uri = qrContent)
         }
 
     }
+
+    // ButtonSheet for actions
+    ButtonSheet(
+        isVisible = isButtonSheetVisible,
+        onDismiss = { isButtonSheetVisible = false },
+        onShareClicked = { 
+            shareManager.shareText(text = qrContent)
+        },
+        onDeleteClicked = {
+            // TODO: Implement delete functionality
+            Logger.d("Delete clicked for QR content: $qrContent")
+        }
+    )
 
 }
