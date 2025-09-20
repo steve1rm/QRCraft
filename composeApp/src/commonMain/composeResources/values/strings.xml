@@ -18,6 +18,11 @@
     <string name="type_geolocation">Geolocation</string>
     <string name="type_wifi">Wi-fi</string>
     <string name="type_text">Text</string>
+    <string name="cd_toggle_isFavorite">Toggle favorite</string>
+    <string name="save">Save</string>
+    <string name="cd_save_qr_as_image">Save qr as image</string>
+    <string name="image_saved_to_downloads">Image saved to downloads</string>
+
 
     <!--CreateQRScreen-->
     <string name="create_qr">Create QR</string>

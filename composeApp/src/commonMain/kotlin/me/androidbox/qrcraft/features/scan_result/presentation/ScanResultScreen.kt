@@ -1,26 +1,33 @@
 package me.androidbox.qrcraft.features.scan_result.presentation
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.VerticalAlignBottom
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -63,11 +70,11 @@ import me.androidbox.ui.OnSurfaceDisabled
 import me.androidbox.ui.Surface
 import org.jetbrains.compose.resources.stringResource
 import qrcraft.composeapp.generated.resources.Res
-import qrcraft.composeapp.generated.resources.copy
-import qrcraft.composeapp.generated.resources.share
+import qrcraft.composeapp.generated.resources.cd_save_qr_as_image
+import qrcraft.composeapp.generated.resources.image_saved_to_downloads
+import qrcraft.composeapp.generated.resources.save
 import qrcraft.composeapp.generated.resources.show_less
 import qrcraft.composeapp.generated.resources.show_more
-
 import qrgenerator.QRCodeImage
 
 
@@ -79,6 +86,7 @@ fun ScanResultScreen(
     qrEntryViewModel: QREntryViewModel,
     title: String? = null,
     qrType: QRType = QRType.SCANNED,
+    onShowSnackBar: (message: String) -> Unit
 ) {
     Logger.e("scannedCode $scannedQrCode")
 
@@ -88,6 +96,7 @@ fun ScanResultScreen(
     val focusManager = LocalFocusManager.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
+    val imageSavedToDownloadsMessage = stringResource(Res.string.image_saved_to_downloads)
 
     var qrContentType by remember {
         mutableStateOf(QRContentType.UNDEFINED)
@@ -275,9 +284,66 @@ fun ScanResultScreen(
 
 
             Row(modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(all = 16.dp)) {
+
+
                 Button(
                     onClick = { shareManager.shareText(text = qrContent) },
-                    modifier = Modifier.minimumInteractiveComponentSize().weight(1f)
+                    modifier = Modifier.size(48.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = OnSurface,
+                        containerColor = Color.White
+                    ), shape = CircleShape,
+                    contentPadding = PaddingValues(0.dp)
+
+                ) {
+
+                    AsyncImage(
+                        model = Res.getUri("files/share.svg"),
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp),
+                    )
+
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+
+
+                Button(
+                    onClick = {
+
+                        clipboard.setText(buildAnnotatedString { append(text = qrContent) })
+
+                    },
+                    modifier = Modifier.size(48.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = OnSurface,
+                        containerColor = Color.White
+                    ),
+                    shape = CircleShape,
+                    contentPadding = PaddingValues(0.dp)
+                ) {
+
+
+                    AsyncImage(
+                        model = Res.getUri("files/copy.svg"),
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp),
+                    )
+
+
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+
+
+                Button(
+                    onClick = {
+                    //TODO rainxchzed insert steve save function. When save is successfull call onShowSnackBar(imageSavedToDownloadsMessage)
+
+
+                        onShowSnackBar(imageSavedToDownloadsMessage)
+                    },
+                    modifier = Modifier.fillMaxWidth().height(48.dp).weight(2f)
                         .padding(end = 8.dp),
                     colors = ButtonDefaults.buttonColors(
                         contentColor = OnSurface,
@@ -285,45 +351,20 @@ fun ScanResultScreen(
                     )
 
                 ) {
-
-                    AsyncImage(
-                        model = Res.getUri("files/share.svg"),
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
+                    Image(
+                        imageVector = Icons.Default.VerticalAlignBottom,
+                        contentDescription = stringResource(Res.string.cd_save_qr_as_image),
+                        modifier = Modifier.size(20.dp)
                     )
+
                     Text(
-                        text = stringResource(Res.string.share),
+                        text = stringResource(Res.string.save),
                         style = MaterialTheme.typography.labelLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
                 }
-                Button(
-                    onClick = {
-
-                        clipboard.setText(buildAnnotatedString { append(text = qrContent) })
-
-                    },
-                    modifier = Modifier.minimumInteractiveComponentSize().weight(1f),
-                    colors = ButtonDefaults.buttonColors(
-                        contentColor = OnSurface,
-                        containerColor = Color.White
-                    )
-                ) {
 
 
-                    AsyncImage(
-                        model = Res.getUri("files/copy.svg"),
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
-                    )
-                    Text(
-                        text = stringResource(Res.string.copy),
-                        style = MaterialTheme.typography.labelLarge,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-
-
-                }
             }
 
 
