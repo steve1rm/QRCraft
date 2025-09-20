@@ -7,6 +7,7 @@ sealed interface HistoryAction {
     data class OnTabSelected(val tab: HistoryTab) : HistoryAction
     data class OnItemLongClick(val item: QREntryUi) : HistoryAction
     data class OnItemClick(val item: QREntryUi) : HistoryAction
+    data class OnItemFavoriteToggle(val item: QREntryUi) : HistoryAction
     data object OnShareClick : HistoryAction
     data object OnDeleteClick : HistoryAction
     data object OnBottomSheetDismiss : HistoryAction

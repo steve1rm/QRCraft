@@ -13,10 +13,10 @@ interface QREntryDao {
     @Upsert
     suspend fun upsert(entry: QREntry)
 
-    @Query("SELECT * FROM qrentry")
+    @Query("SELECT * FROM qrentry ORDER BY isFavourite DESC, createdAt DESC")
     fun getAllEntries(): Flow<List<QREntry>>
 
-    @Query("SELECT * FROM qrentry WHERE qrType = :type")
+    @Query("SELECT * FROM qrentry WHERE qrType = :type  ORDER BY isFavourite DESC, createdAt DESC")
     fun getEntriesByType(type: QRType): Flow<List<QREntry>>
 
     fun getScannedEntries(): Flow<List<QREntry>>{

@@ -28,13 +28,13 @@ class QREntryViewModel(val qrEntryRepository: QREntryRepository) : ViewModel() {
         Logger.e("Will create entry title: $title, content $content, contentType $contentType")
 
         val qrEntry = QREntry(id = id, title = title, content = content, contentType = contentType, qrType = qrType)
-        viewModelScope.launch { qrEntryRepository.addQREntry(qrEntry = qrEntry) }
+        viewModelScope.launch { qrEntryRepository.upsertQREntry(qrEntry = qrEntry) }
     }
 
     fun upsertQREntry(title: String, content: String, contentType: QRContentType, qrType: QRType = QRType.SCANNED) {
         Logger.e("Will create entry title: $title, content $content, contentType $contentType")
 
         val qrEntry = QREntry(title = title, content = content, contentType = contentType, qrType = qrType)
-        viewModelScope.launch { qrEntryRepository.addQREntry(qrEntry = qrEntry) }
+        viewModelScope.launch { qrEntryRepository.upsertQREntry(qrEntry = qrEntry) }
     }
 }

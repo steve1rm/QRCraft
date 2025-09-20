@@ -9,7 +9,7 @@ import me.androidbox.qrcraft.features.scan_result.data.db.QREntry
 import me.androidbox.qrcraft.features.scan_result.data.db.QREntryDao
 import me.androidbox.qrcraft.features.scan_result.data.db.QRTypeConverter
 
-@Database(entities = [QREntry::class], version = 9)
+@Database(entities = [QREntry::class], version = 10)
 @ConstructedBy(AppDatabaseConstructor::class)
 @TypeConverters(QRTypeConverter::class, QRContentTypeConverter::class)
 abstract class AppDatabase: RoomDatabase() {
