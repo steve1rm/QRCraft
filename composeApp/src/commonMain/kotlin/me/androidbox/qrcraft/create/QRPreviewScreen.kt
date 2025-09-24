@@ -49,6 +49,7 @@ fun QRPreviewScreen(
     qrContent: String,
     isLink: Boolean,
     isText: Boolean,
+    onSave: () -> Unit,
     viewModel: CreatePreviewViewModel = koinViewModel()
 ) {
     val shareManager = rememberShareManager()
@@ -79,7 +80,7 @@ fun QRPreviewScreen(
     }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.onSurface)
     ) {
@@ -133,9 +134,7 @@ fun QRPreviewScreen(
                         )
                     }
                 },
-                onShareClicked = {
-                    shareManager.shareText(details)
-                },
+                onSave = onSave,
                 onLinkClicked = { url ->
                     urlHandler.openUri(url)
                 }
@@ -155,7 +154,8 @@ fun QRPreviewScreenPreview() {
             qrContent = "",
             onBackClick = {},
             isLink = false,
-            isText = true
+            isText = true,
+            onSave = {}
         )
     }
 }

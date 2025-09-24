@@ -45,7 +45,7 @@ fun QRContentLayout(
     qrContent: String,
     isLink: Boolean,
     isText: Boolean,
-    onShareClicked: () -> Unit,
+    onSave: () -> Unit,
     onCopyClicked: () -> Unit,
     onLinkClicked: (url: String) -> Unit
 ) {
@@ -123,7 +123,7 @@ fun QRContentLayout(
             ) {
                 IconButton(
                     modifier = Modifier.size(44.dp),
-                    onClick = onShareClicked,
+                    onClick = onSave,
                     colors = IconButtonDefaults.iconButtonColors(
                         containerColor = MaterialTheme.colorScheme.background
                     )
@@ -151,7 +151,7 @@ fun QRContentLayout(
 
                 Button(
                     modifier = Modifier.weight(1f),
-                    onClick = onShareClicked,
+                    onClick = onSave,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.background
                     )
@@ -201,7 +201,7 @@ fun QRContentLayoutPreview() {
             qrContent = "",
             isLink = false,
             isText = true,
-            onShareClicked = {},
+            onSave = {},
             onCopyClicked = {},
             onLinkClicked = {}
         )

@@ -1,14 +1,20 @@
 package me.androidbox.qrcraft
 
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -16,6 +22,11 @@ import androidx.core.net.toUri
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.withContext
+import me.androidbox.qrcraft.features.scan_result.data.SaveQRCraft
+import kotlin.coroutines.coroutineContext
 
 class AndroidPlatform : Platform {
     override val name: String = "Android ${Build.VERSION.SDK_INT}"
@@ -75,5 +86,49 @@ actual suspend fun scanQRFromImage(imageUri: String?): String? = suspendCancella
             }
     } catch (e: Exception) {
         continuation.resume(null)
+    }
+}
+
+actual class SaveQRCraftImp(private val context: Context) : SaveQRCraft {
+    actual override suspend fun save(imageBitmap: ImageBitmap, fileName: String): String? {
+        val contentValues = ContentValues().apply {
+            this.put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+            this.put(MediaStore.Images.Media.MIME_TYPE, "image/webp")
+            this.put(
+                MediaStore.Images.Media.RELATIVE_PATH,
+                Environment.DIRECTORY_PICTURES + "/qrcodes"
+            )
+        }
+
+        val uri = context.contentResolver.insert(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            contentValues
+        )
+
+        if (uri != null) {
+            try {
+                val uri = withContext(Dispatchers.IO) {
+                    context.contentResolver.openOutputStream(uri).use { outputStream ->
+                        if (outputStream != null) {
+                            val bitmap = imageBitmap.asAndroidBitmap()
+                            bitmap.compress(Bitmap.CompressFormat.WEBP, 100, outputStream)
+
+                            println("qrcraft outputstream completed")
+                        }
+                    }
+                    println("MEME success $uri")
+                    uri
+                }
+
+                return uri.path
+            } catch (exception: Exception) {
+                coroutineContext.ensureActive()
+
+                exception.printStackTrace()
+            }
+        }
+
+        println("qrcraft failed ${uri?.path}")
+        return uri?.path
     }
 }

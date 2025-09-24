@@ -1,6 +1,8 @@
 package me.androidbox.qrcraft
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.ImageBitmap
+import me.androidbox.qrcraft.features.scan_result.data.SaveQRCraft
 
 interface Platform {
     val name: String
@@ -18,3 +20,7 @@ expect class ImagePicker() {
 }
 
 expect suspend fun scanQRFromImage(imageUri: String?): String?
+
+expect class SaveQRCraftImp : SaveQRCraft {
+    override suspend fun save(imageBitmap: ImageBitmap, fileName: String): String?
+}
