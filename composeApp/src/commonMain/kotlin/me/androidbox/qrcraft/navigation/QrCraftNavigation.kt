@@ -34,6 +34,7 @@ fun NavGraphBuilder.qrCraftNavigation(
     navHostController: NavHostController,
     prefDataStore: PrefDataStore,
     qrEntryViewModel: QREntryViewModel,
+    onShowSnackBar: (message: String) -> Unit
 ) {
     this.navigation<QrCraftNavigation>(
         startDestination = QrCraftNavigation.Scan
@@ -86,6 +87,7 @@ fun NavGraphBuilder.qrCraftNavigation(
                 qrEntryViewModel = qrEntryViewModel,
                 title = scanResultsRoute.title,
                 qrType = scanResultsRoute.qrType,
+                onShowSnackBar = onShowSnackBar
             )
         }
 

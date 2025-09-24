@@ -14,5 +14,6 @@ data class QREntryUi(
     val qrType: QRType = QRType.SCANNED,
     val createdAt: Long,
     val createdAtFormatted: String,
-    val iconResource: DrawableResource?
+    val iconResource: DrawableResource?,
+    val isFavourite: Boolean = false,
 )

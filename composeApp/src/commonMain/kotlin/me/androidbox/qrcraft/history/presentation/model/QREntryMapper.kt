@@ -18,9 +18,8 @@ fun QREntry.toQREntryUi(): QREntryUi {
         qrType = this.qrType,
         createdAt = this.createdAt,
         createdAtFormatted = this.createdAt.toFormattedDate(),
-        iconResource = getIconUrlFromContentType(this.contentType)
-
-
+        iconResource = getIconUrlFromContentType(this.contentType),
+        isFavourite = isFavourite
     )
 }
 
@@ -31,7 +30,8 @@ fun QREntryUi.toQREntry(): QREntry {
         content = this.content,
         contentType = this.contentType,
         qrType = this.qrType,
-        createdAt = this.createdAt
+        createdAt = this.createdAt,
+        isFavourite = this.isFavourite
     )
 }
 

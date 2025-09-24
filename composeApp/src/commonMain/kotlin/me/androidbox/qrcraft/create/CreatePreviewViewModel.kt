@@ -18,6 +18,6 @@ class CreatePreviewViewModel (
 
 
         val qrEntry = QREntry(title = title, content = content, contentType = contentType, qrType = qrType)
-        viewModelScope.launch { qrEntryRepository.addQREntry(qrEntry = qrEntry) }
+        viewModelScope.launch { qrEntryRepository.upsertQREntry(qrEntry = qrEntry) }
     }
 }

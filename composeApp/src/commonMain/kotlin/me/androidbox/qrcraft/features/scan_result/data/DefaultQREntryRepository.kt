@@ -13,7 +13,7 @@ class DefaultQREntryRepository(val qrEntryDao: QREntryDao) : QREntryRepository {
 
     override val generatedEntries: Flow<List<QREntry>> = qrEntryDao.getGeneratedEntries()
 
-    override suspend fun addQREntry(qrEntry: QREntry) {
+    override suspend fun upsertQREntry(qrEntry: QREntry) {
         qrEntryDao.upsert(qrEntry)
     }
 

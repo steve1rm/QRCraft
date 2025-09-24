@@ -12,7 +12,8 @@ fun AppNavigation(
     navController: NavHostController,
     prefDataStore: PrefDataStore,
     qrEntryViewModel: QREntryViewModel,
-    modifier: Modifier) {
+    modifier: Modifier,
+    onShowSnackBar: (message: String) -> Unit) {
 
     NavHost(
         navController = navController,
@@ -22,6 +23,7 @@ fun AppNavigation(
         this.qrCraftNavigation(
             navHostController = navController,
             prefDataStore = prefDataStore,
-            qrEntryViewModel = qrEntryViewModel)
+            qrEntryViewModel = qrEntryViewModel,
+            onShowSnackBar = onShowSnackBar)
     }
 }

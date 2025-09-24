@@ -171,6 +171,7 @@ fun HistoryScreen(
                         title = if (item.title.lowercase() != item.contentType.name.lowercase()) item.title else item.contentType.toDisplayName(),
                         details = item.content,
                         dateTime = item.createdAtFormatted,
+                        isFavourite = item.isFavourite,
                         icon = {
                             Image(
                                 painter = painterResource(item.contentType.toDrawableResource()),
@@ -184,6 +185,9 @@ fun HistoryScreen(
                         },
                         onLongClick = {
                             onAction(HistoryAction.OnItemLongClick(item))
+                        },
+                        onFavoriteClick = {
+                            onAction(HistoryAction.OnItemFavoriteToggle(item))
                         },
                         modifier = Modifier.animateItem()
                     )
