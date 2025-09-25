@@ -8,6 +8,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -49,8 +52,9 @@ fun QRPreviewScreen(
     qrContent: String,
     isLink: Boolean,
     isText: Boolean,
+    isFavourite: Boolean,
     onSave: () -> Unit,
-    viewModel: CreatePreviewViewModel = koinViewModel()
+    viewModel: CreatePreviewViewModel = koinViewModel(),
 ) {
     val shareManager = rememberShareManager()
     val clipboard = LocalClipboardManager.current
@@ -67,7 +71,8 @@ fun QRPreviewScreen(
                 viewModel.addQREntry(
                     title = title,
                     contentType = contentType,
-                    content = qrContent
+                    content = qrContent,
+                    isFavourite = isFavourite
                 )
             }
 
@@ -99,6 +104,26 @@ fun QRPreviewScreen(
                         imageVector = vectorResource(Res.drawable.arrow_left),
                         contentDescription = "Navigate back",
                         tint = Color.White
+                    )
+                }
+            },
+            actions = {
+                IconButton(
+                    onClick = {
+                        viewModel.addQREntry(
+                            title = title,
+                            contentType = contentType,
+                            content = qrContent,
+                            isFavourite = !isFavourite
+                        )
+                    }
+                ) {
+                    Icon(
+                        imageVector = if (isFavourite) {
+                            Icons.Default.Favorite
+                        } else Icons.Default.FavoriteBorder,
+                        contentDescription = "Toggle favorite",
+
                     )
                 }
             },
@@ -155,6 +180,7 @@ fun QRPreviewScreenPreview() {
             onBackClick = {},
             isLink = false,
             isText = true,
+            isFavourite = false,
             onSave = {}
         )
     }

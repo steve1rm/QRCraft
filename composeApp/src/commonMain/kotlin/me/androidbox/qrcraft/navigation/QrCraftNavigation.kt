@@ -34,7 +34,7 @@ fun NavGraphBuilder.qrCraftNavigation(
     navHostController: NavHostController,
     prefDataStore: PrefDataStore,
     qrEntryViewModel: QREntryViewModel,
-    onShowSnackBar: (message: String) -> Unit
+    onShowSnackBar: (message: String) -> Unit,
 ) {
     this.navigation<QrCraftNavigation>(
         startDestination = QrCraftNavigation.Scan
@@ -67,12 +67,13 @@ fun NavGraphBuilder.qrCraftNavigation(
 
         composable<QrCraftNavigation.History> {
             HistoryRoot(
-                onNavigateToScanResult = { id, scanned, title, qrType ->
+                onNavigateToScanResult = { id, scanned, title, isFavourite, qrType ->
                     navHostController.navigate(
                         route = QrCraftNavigation.QrPreview(
                             scannedQrCode = scanned,
                             title = title,
-                            details = ""
+                            details = "",
+                            isFavourite = isFavourite
                         )
                     )
                 }
@@ -110,7 +111,8 @@ fun NavGraphBuilder.qrCraftNavigation(
                         QrCraftNavigation.QrPreview(
                             scannedQrCode = result,
                             title = "Title",
-                            details = "Details"
+                            details = "Details",
+                            isFavourite = false
                         )
                     )
 
@@ -151,7 +153,7 @@ fun NavGraphBuilder.qrCraftNavigation(
                     generateQrCode(
                         url = qrContent,
                         onSuccess = { _, imageBitmap ->
-                            if(imageBitmap != null) {
+                            if (imageBitmap != null) {
                                 coroutineScope.launch {
                                     saveQRCraft.save(imageBitmap, "qrcaft")
 
@@ -162,7 +164,8 @@ fun NavGraphBuilder.qrCraftNavigation(
                         onFailure = {
 
                         })
-                }
+                },
+                isFavourite = qrContentRoute.isFavourite
             )
         }
     }
