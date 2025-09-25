@@ -96,7 +96,7 @@ actual class SaveQRCraftImp(private val context: Context) : SaveQRCraft {
             this.put(MediaStore.Images.Media.MIME_TYPE, "image/webp")
             this.put(
                 MediaStore.Images.Media.RELATIVE_PATH,
-                Environment.DIRECTORY_PICTURES + "/qrcodes"
+                Environment.DIRECTORY_DOWNLOADS + "/qrcodes"
             )
         }
 
