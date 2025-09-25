@@ -154,6 +154,8 @@ fun NavGraphBuilder.qrCraftNavigation(
                             if(imageBitmap != null) {
                                 coroutineScope.launch {
                                     saveQRCraft.save(imageBitmap, "qrcaft")
+
+                                    onShowSnackBar("Image saved to Downloads")
                                 }
                             }
                         },
