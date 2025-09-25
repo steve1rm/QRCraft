@@ -11,6 +11,7 @@ import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.ImageBitmap
@@ -90,6 +91,7 @@ actual suspend fun scanQRFromImage(imageUri: String?): String? = suspendCancella
 }
 
 actual class SaveQRCraftImp(private val context: Context) : SaveQRCraft {
+    @RequiresApi(Build.VERSION_CODES.Q)
     actual override suspend fun save(imageBitmap: ImageBitmap, fileName: String): String? {
         val contentValues = ContentValues().apply {
             this.put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
@@ -101,7 +103,7 @@ actual class SaveQRCraftImp(private val context: Context) : SaveQRCraft {
         }
 
         val uri = context.contentResolver.insert(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            MediaStore.Downloads.EXTERNAL_CONTENT_URI,
             contentValues
         )
 
