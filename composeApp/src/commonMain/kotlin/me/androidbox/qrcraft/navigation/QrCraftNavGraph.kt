@@ -30,7 +30,12 @@ sealed interface QrCraftNavGraph {
         data class CreateQR(val type: QRContentType) : QrCraftNavGraph
 
         @Serializable
-        data class QrPreview(val scannedQrCode: String, val title: String, val details: String) :
+        data class QrPreview(
+            val scannedQrCode: String,
+            val title: String,
+            val details: String,
+            val isFavourite: Boolean,
+        ) :
             QrCraftNavGraph
     }
 }

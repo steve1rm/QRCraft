@@ -15,5 +15,6 @@ class QREntry @OptIn(ExperimentalTime::class) constructor(
     val content: String,
     val qrType: QRType = QRType.SCANNED,
     val createdAt: Long = Clock.System.now().toEpochMilliseconds(),
+    val isFavourite: Boolean = false,
 ) {
 }

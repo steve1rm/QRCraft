@@ -1,6 +1,9 @@
 package me.androidbox.qrcraft.core.di
 
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import me.androidbox.qrcraft.core.data.db.AppDatabase
 import me.androidbox.qrcraft.core.data.db.DatabaseFactory
 import me.androidbox.qrcraft.create.CreatePreviewViewModel
@@ -22,8 +25,9 @@ val qrModule = module {
     viewModel { (type: QRContentType) ->
         CreateQRScreenViewModel(type)
     }
-
-
+    single<CoroutineScope> {
+        CoroutineScope(Dispatchers.Default + SupervisorJob())
+    }
 }
 
 expect val platformModule: Module

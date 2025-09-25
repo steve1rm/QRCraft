@@ -92,6 +92,16 @@ class HistoryViewModel(
                     _events.send(OnItemClick(action.item))
                 }
             }
+
+            is HistoryAction.OnItemFavoriteToggle -> {
+                viewModelScope.launch {
+                    qrEntryRepository.upsertQREntry(
+                        action.item
+                            .copy(isFavourite = !action.item.isFavourite)
+                            .toQREntry()
+                    )
+                }
+            }
         }
     }
 
