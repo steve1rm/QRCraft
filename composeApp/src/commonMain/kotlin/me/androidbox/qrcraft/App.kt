@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.StarBorder
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -17,51 +19,91 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import co.touchlab.kermit.Logger
+import kotlinx.coroutines.launch
 import me.androidbox.qrcraft.bottom_bar.CustomBottomBar
+import me.androidbox.qrcraft.core.presentation.design_system.snackbar.SnackBarWithIcon
+import me.androidbox.qrcraft.features.scan_result.presentation.QREntryViewModel
 import me.androidbox.qrcraft.navigation.AppNavigation
 import me.androidbox.qrcraft.navigation.QrCraftNavGraph
 import me.androidbox.qrcraft.scanning.presentation.PrefDataStore
 import me.androidbox.ui.AppTheme
 import me.androidbox.ui.OnSurface
+import me.androidbox.ui.OnSurfaceDisabled
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 import qrcraft.composeapp.generated.resources.Res
+import qrcraft.composeapp.generated.resources.cd_toggle_isFavorite
 import qrcraft.composeapp.generated.resources.scan_result
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
 fun App(
-    prefDataStore: PrefDataStore
+    prefDataStore: PrefDataStore,
 ) {
 
     val navController = rememberNavController()
     val backStackEntry = navController.currentBackStackEntryAsState()
 
-    val isScanResult = backStackEntry.value?.destination?.route?.startsWith(QrCraftNavGraph.QrCraftNavigation.ScanResult::class.qualifiedName!!) == true
+    val isScanResult =
+        backStackEntry.value?.destination?.route?.startsWith(QrCraftNavGraph.QrCraftNavigation.ScanResult::class.qualifiedName!!) == true
 
-    val isScanningScreen = backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.Scan::class.qualifiedName
-    val isCreateQRChooseTypeScreenLoaded = backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.CreateQRChooseType::class.qualifiedName
+    val isScanningScreen =
+        backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.Scan::class.qualifiedName
+    val isHistoryScreen =
+        backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.History::class.qualifiedName
+    val isCreateQRChooseTypeScreenLoaded =
+        backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.CreateQRChooseType::class.qualifiedName
 
-    val isBottomBarVisible = (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.Scan::class.qualifiedName) or (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.CreateQRChooseType::class.qualifiedName)
+    val isBottomBarVisible =
+        (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.Scan::class.qualifiedName) or
+                (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.CreateQRChooseType::class.qualifiedName) or
+                (backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.History::class.qualifiedName)
 
+    val isCreateQRChooseTypeScreen =
+        backStackEntry.value?.destination?.route == QrCraftNavGraph.QrCraftNavigation.CreateQRChooseType::class.qualifiedName
+
+
+    val qrEntryViewModel: QREntryViewModel = koinViewModel()
+
+
+    val isFavourite by qrEntryViewModel.isFavourite.collectAsStateWithLifecycle()
+
+    val snackBarHostState: SnackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(backStackEntry, isScanResult) {
         Logger.e("currentRoute $backStackEntry isScanResult $isScanResult")
     }
 
+
+    val scope = rememberCoroutineScope()
+
     AppTheme {
-        Scaffold(contentWindowInsets = WindowInsets.systemBars, topBar = {
+        Scaffold(contentWindowInsets = WindowInsets.systemBars, snackbarHost = {
+            SnackbarHost(
+                hostState = snackBarHostState,
+                snackbar = { snackBarData ->
+                    SnackBarWithIcon(data = snackBarData)
+                }
+            )
+        }, topBar = {
             if (isScanResult) {
                 CenterAlignedTopAppBar(
                     title = {
@@ -83,6 +125,23 @@ fun App(
                         }
 
                     },
+                    actions = {
+
+                        IconButton(onClick = {
+                            Logger.e("isFavourite $isFavourite")
+                            qrEntryViewModel.toggleIsFavourite()
+                        }) {
+                            Icon(
+                                imageVector = if (isFavourite) {
+                                    Icons.Outlined.Star
+                                } else Icons.Default.StarBorder,
+                                contentDescription = stringResource(Res.string.cd_toggle_isFavorite),
+                                tint = if (isFavourite) Color.White else OnSurfaceDisabled
+                            )
+                        }
+
+
+                    },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = OnSurface,
                         titleContentColor = Color.White,
@@ -96,15 +155,18 @@ fun App(
                 Box(
                     modifier = Modifier.fillMaxWidth().wrapContentHeight().navigationBarsPadding()
                         .then(
-                            if (isScanningScreen)
-                                Modifier.background(color = Color.Transparent)
-                            else
+                            if (isCreateQRChooseTypeScreen)
                                 Modifier.background(color = MaterialTheme.colorScheme.surface)
+                            else
+                                Modifier.background(color = Color.Transparent)
                         ), contentAlignment = Alignment.Center
                 ) {
 
                     CustomBottomBar(
-                        onHistoryClick = {},
+                        onHistoryClick = {
+
+                            navController.navigate(QrCraftNavGraph.QrCraftNavigation.History)
+                        },
                         onScanClick = {
                             navController.popBackStack(
                                 QrCraftNavGraph.QrCraftNavigation.Scan,
@@ -127,7 +189,13 @@ fun App(
             AppNavigation(
                 navController = navController,
                 prefDataStore = prefDataStore,
-                modifier = if(!isScanningScreen) parentModifier else Modifier
+                qrEntryViewModel = qrEntryViewModel,
+                modifier = if (!isScanningScreen && !isHistoryScreen) parentModifier else Modifier,
+                onShowSnackBar = { message ->
+
+                    scope.launch { snackBarHostState.showSnackbar(message) }
+
+                }
             )
         }
     }

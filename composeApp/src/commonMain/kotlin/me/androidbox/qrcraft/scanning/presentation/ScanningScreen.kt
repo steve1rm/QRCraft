@@ -4,6 +4,14 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.FlashOff
+import androidx.compose.material.icons.outlined.FlashOn
+import androidx.compose.material.icons.outlined.Image
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -16,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,7 +37,6 @@ import co.touchlab.kermit.Logger
 import com.kashif.cameraK.controller.CameraController
 import com.kashif.cameraK.enums.CameraLens
 import com.kashif.cameraK.enums.Directory
-import com.kashif.cameraK.enums.FlashMode
 import com.kashif.cameraK.enums.ImageFormat
 import com.kashif.cameraK.enums.QualityPrioritization
 import com.kashif.cameraK.enums.TorchMode
@@ -39,9 +47,12 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import me.androidbox.qrcraft.ImagePicker
 import me.androidbox.qrcraft.permissions.PermissionDialog
+import me.androidbox.qrcraft.scanQRFromImage
 import me.androidbox.qrcraft.scanning.presentation.components.CustomSnackBarVisuals
 import me.androidbox.qrcraft.scanning.presentation.components.CustomSnackbar
+import me.androidbox.qrcraft.scanning.presentation.components.ErrorDialog
 import me.androidbox.qrcraft.scanning.presentation.components.ScanningSurfaceRoundedCorners
 import me.androidbox.ui.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -71,8 +82,41 @@ fun ScanningScreen(
         mutableStateOf(permissionState != PermissionState.Granted)
     }
 
+    var isFlashlightOn by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    var showErrorDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    val imagePicker = remember { ImagePicker() }
+    imagePicker.pickImage { uri ->
+        coroutineScope.launch {
+            try {
+                val qrResult = scanQRFromImage(uri.toString())
+                if (qrResult != null) {
+                    onNavigateToScanResult(qrResult)
+                } else {
+                    showErrorDialog = true
+                    // Show error snackbar
+
+                }
+            } catch (e: Exception) {
+                showErrorDialog = true
+
+                // Show error snackbar
+            }
+        }
+    }
+
     var hasShownSnackBarOnce by remember { mutableStateOf(false) }
     val qrScannerPlugin = rememberQRScannerPlugin(coroutineScope)
+
+    LaunchedEffect(isFlashlightOn) {
+//        cameraController?.setFlashMode(if (isFlashlightOn) FlashMode.ON else FlashMode.OFF)
+        cameraController?.setTorchMode(if (isFlashlightOn) TorchMode.ON else TorchMode.OFF)
+    }
 
     LaunchedEffect(Unit) {
         Logger.d(
@@ -145,18 +189,17 @@ fun ScanningScreen(
             ) {
                 val boxHeight = this.maxHeight
 
-
                 ScanningSurfaceRoundedCorners(
                     modifier = Modifier.fillMaxSize(),
-                    surfaceRadius = 18.dp,     // How rounded the Surface itself is
-                    lineColor = Color.Yellow,          // Color of the corner lines
-                    lineStrokeWidth = 5.dp,          // Thickness of the corner lines
+                    surfaceRadius = 18.dp,
+                    lineColor = Color.Yellow,
+                    lineStrokeWidth = 5.dp,
                     lineExtensionLength = 32.dp,
                     content = { modifier ->
                         CameraPreview(
                             cameraConfiguration = {
                                 setCameraLens(CameraLens.BACK)
-                                setFlashMode(FlashMode.OFF)
+//                                setFlashMode(FlashMode.OFF)
                                 setTorchMode(TorchMode.OFF)
                                 setImageFormat(ImageFormat.JPEG)
                                 setDirectory(Directory.PICTURES)
@@ -173,6 +216,45 @@ fun ScanningScreen(
                             modifier = modifier
                         )
                     })
+
+                IconButton(
+                    onClick = {
+                        isFlashlightOn = !isFlashlightOn
+                    },
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = if (isFlashlightOn) {
+                            MaterialTheme.colorScheme.primary
+                        } else MaterialTheme.colorScheme.surfaceContainerHighest,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
+                    ),
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(horizontal = 24.dp, vertical = 12.dp)
+                        .statusBarsPadding()
+                ) {
+                    Icon(
+                        imageVector = if (isFlashlightOn) Icons.Outlined.FlashOff else Icons.Outlined.FlashOn,
+                        contentDescription = if (isFlashlightOn) "Turn off flashlight" else "Turn on flashlight"
+                    )
+                }
+                IconButton(
+                    onClick = {
+                        imagePicker.launch()
+                    },
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
+                    ),
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(horizontal = 24.dp, vertical = 12.dp)
+                        .statusBarsPadding()
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Image,
+                        contentDescription = "Pick image from gallery"
+                    )
+                }
 
                 Text(
                     modifier = Modifier
@@ -198,6 +280,15 @@ fun ScanningScreen(
             }
         }
     )
+
+    if (showErrorDialog) {
+        ErrorDialog(
+            message = "No QR-codes found",
+            onDismissRequest = {
+                showErrorDialog = false
+            }
+        )
+    }
 }
 
 @Preview

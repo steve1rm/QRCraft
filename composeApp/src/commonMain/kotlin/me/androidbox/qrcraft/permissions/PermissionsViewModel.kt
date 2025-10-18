@@ -15,7 +15,7 @@ import dev.icerock.moko.permissions.camera.CAMERA
 import kotlinx.coroutines.launch
 
 class PermissionsViewModel(
-    private val permissionsController: PermissionsController
+    val permissionsController: PermissionsController
 ) : ViewModel() {
 
     var permissionState by mutableStateOf(PermissionState.NotDetermined)

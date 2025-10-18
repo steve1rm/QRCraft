@@ -1,6 +1,5 @@
 package me.androidbox.qrcraft.navigation
 
-import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -9,38 +8,45 @@ import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import me.androidbox.qrcraft.create.QRPreviewScreen
 import me.androidbox.qrcraft.features.create_qr.choose_type.CreateQRChooseTypeScreen
 import me.androidbox.qrcraft.features.create_qr.choose_type.CreateQRScreenRoot
+import me.androidbox.qrcraft.features.scan_result.data.SaveQRCraft
 import me.androidbox.qrcraft.features.scan_result.domain.QRContentType
 import me.androidbox.qrcraft.features.scan_result.domain.detectQRContentType
 import me.androidbox.qrcraft.features.scan_result.domain.extractQRContent
 import me.androidbox.qrcraft.features.scan_result.domain.toDisplayName
+import me.androidbox.qrcraft.features.scan_result.presentation.QREntryViewModel
 import me.androidbox.qrcraft.features.scan_result.presentation.ScanResultScreen
+import me.androidbox.qrcraft.history.presentation.HistoryRoot
 import me.androidbox.qrcraft.navigation.QrCraftNavGraph.QrCraftNavigation
 import me.androidbox.qrcraft.permissions.PermissionsViewModel
 import me.androidbox.qrcraft.scanning.presentation.PrefDataStore
 import me.androidbox.qrcraft.scanning.presentation.ScanningScreen
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import qrgenerator.generateQrCode
 
 fun NavGraphBuilder.qrCraftNavigation(
     navHostController: NavHostController,
-    prefDataStore: PrefDataStore) {
+    prefDataStore: PrefDataStore,
+    qrEntryViewModel: QREntryViewModel,
+    onShowSnackBar: (message: String) -> Unit,
+) {
     this.navigation<QrCraftNavigation>(
         startDestination = QrCraftNavigation.Scan
     ) {
         composable<QrCraftNavigation.Scan> {
 
             val factory = rememberPermissionsControllerFactory()
-            val permissionController = remember(factory) {
-                factory.createPermissionsController()
-            }
 
-            BindEffect(permissionController)
             val permissionsViewModel = viewModel(initializer = {
-                PermissionsViewModel(permissionController)
+                PermissionsViewModel(factory.createPermissionsController())
             })
+            BindEffect(permissionsViewModel.permissionsController)
 
             ScanningScreen(
                 onCloseClicked = {
@@ -59,9 +65,31 @@ fun NavGraphBuilder.qrCraftNavigation(
             )
         }
 
+        composable<QrCraftNavigation.History> {
+            HistoryRoot(
+                onNavigateToScanResult = { id, scanned, title, isFavourite, qrType ->
+                    navHostController.navigate(
+                        route = QrCraftNavigation.QrPreview(
+                            scannedQrCode = scanned,
+                            title = title,
+                            details = "",
+                            isFavourite = isFavourite
+                        )
+                    )
+                }
+            )
+        }
+
         composable<QrCraftNavigation.ScanResult> {
             val scanResultsRoute = it.toRoute<QrCraftNavigation.ScanResult>()
-            ScanResultScreen(scannedQrCode = scanResultsRoute.scannedQrCode)
+            ScanResultScreen(
+                id = scanResultsRoute.id,
+                scannedQrCode = scanResultsRoute.scannedQrCode,
+                qrEntryViewModel = qrEntryViewModel,
+                title = scanResultsRoute.title,
+                qrType = scanResultsRoute.qrType,
+                onShowSnackBar = onShowSnackBar
+            )
         }
 
         composable<QrCraftNavigation.CreateQRChooseType> {
@@ -79,11 +107,14 @@ fun NavGraphBuilder.qrCraftNavigation(
                     navHostController.navigateUp()
                 },
                 onNavigateToResult = { result ->
-                    navHostController.navigate(QrCraftNavigation.QrPreview(
-                        scannedQrCode = result,
-                        title = "Title",
-                        details = "Details"
-                    ))
+                    navHostController.navigate(
+                        QrCraftNavigation.QrPreview(
+                            scannedQrCode = result,
+                            title = "Title",
+                            details = "Details",
+                            isFavourite = false
+                        )
+                    )
 
                 },
                 viewModel = koinViewModel(
@@ -100,18 +131,41 @@ fun NavGraphBuilder.qrCraftNavigation(
             val qrContentRoute = it.toRoute<QrCraftNavigation.QrPreview>()
 
             val qrContentType = detectQRContentType(scannedQrCode = qrContentRoute.scannedQrCode)
-            val qrContent = extractQRContent(scannedQRCode = qrContentRoute.scannedQrCode, qrContentType = qrContentType)
-            val text = qrContentType.toDisplayName()
+            val qrContent = extractQRContent(
+                scannedQRCode = qrContentRoute.scannedQrCode,
+                qrContentType = qrContentType
+            )
+
+            val saveQRCraft = koinInject<SaveQRCraft>()
+            val coroutineScope = koinInject<CoroutineScope>()
 
             QRPreviewScreen(
-                title = text,
+                title = qrContentType.toDisplayName(),
+                contentType = qrContentType,
                 details = qrContent,
                 qrContent = qrContentRoute.scannedQrCode,
                 isLink = qrContentType == QRContentType.LINK,
                 isText = qrContentType == QRContentType.TEXT,
                 onBackClick = {
                     navHostController.popBackStack()
-                }
+                },
+                onSave = {
+                    generateQrCode(
+                        url = qrContent,
+                        onSuccess = { _, imageBitmap ->
+                            if (imageBitmap != null) {
+                                coroutineScope.launch {
+                                    saveQRCraft.save(imageBitmap, "qrcaft")
+
+                                    onShowSnackBar("Image saved to Downloads")
+                                }
+                            }
+                        },
+                        onFailure = {
+
+                        })
+                },
+                isFavourite = qrContentRoute.isFavourite
             )
         }
     }

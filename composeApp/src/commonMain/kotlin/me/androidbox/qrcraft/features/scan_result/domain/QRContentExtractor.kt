@@ -39,9 +39,10 @@ fun extractVCardInfo(raw: String): ContactInfo? {
         return null
     }
 
-    var name: String? = null
-    var phone: String? = null
-    var email: String? = null
+
+    var name = ""
+    var phone = ""
+    var email = ""
 
     raw.substring(startIndex, endIndex)
         .lines()

@@ -4,13 +4,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import me.androidbox.qrcraft.features.scan_result.presentation.QREntryViewModel
 import me.androidbox.qrcraft.scanning.presentation.PrefDataStore
 
 @Composable
 fun AppNavigation(
     navController: NavHostController,
     prefDataStore: PrefDataStore,
-    modifier: Modifier) {
+    qrEntryViewModel: QREntryViewModel,
+    modifier: Modifier,
+    onShowSnackBar: (message: String) -> Unit) {
 
     NavHost(
         navController = navController,
@@ -19,6 +22,8 @@ fun AppNavigation(
     ) {
         this.qrCraftNavigation(
             navHostController = navController,
-            prefDataStore = prefDataStore)
+            prefDataStore = prefDataStore,
+            qrEntryViewModel = qrEntryViewModel,
+            onShowSnackBar = onShowSnackBar)
     }
 }
